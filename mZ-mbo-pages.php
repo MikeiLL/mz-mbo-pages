@@ -60,7 +60,7 @@ class MZ_MBO_Pages_Admin {
     public function __construct( $version ) {
         $this->version = $version;
         $this->load_sections();
-        //$this->load_sandbox();
+        //$this->load_pages();
         //$this->run_sandbox();
         }
         
@@ -68,7 +68,7 @@ class MZ_MBO_Pages_Admin {
         require_once MZ_MBO_PAGES_DIR .'lib/sections.php';
         }
         
-    public function load_sandbox() {
+    public function load_pages() {
         require_once MZ_MBO_PAGES_DIR .'lib/functions.php';
         require_once MZ_MBO_PAGES_DIR .'inc/list_classes.php';
         }
@@ -256,7 +256,7 @@ class MZ_MBO_Pages {
  	
  				$mz_mbo_pages = new MZ_MBO_Pages_Pages();
  		
-        add_shortcode('mz-mbo-pages', array($mz_mbo_pages, 'mZ_mbo_pages_pages'));
+        add_shortcode('mz-mbo-list-classes', array($mz_mbo_pages, 'mZ_mbo_pages_pages'));
 
     }
  
