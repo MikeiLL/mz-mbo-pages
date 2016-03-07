@@ -122,9 +122,8 @@ class MZ_MBO_Pages_Pages {
 										. '_' . $single_event->className;
 			
 			$identifier = str_replace(' ', '_', $identifier);
-			mz_pr($identifier);
+
 			if(empty($all_classes[$identifier])) {
-				mz_pr("putting it");
 				$all_classes[$identifier] = $single_event;
 				} 
 		}
