@@ -25,7 +25,7 @@
 // There are several virtual page classes, we want to avoid a clash!
 //
 //
-class Virtual_Themed_Pages_BC
+class Virtual_Themed_Pages_MZoo
 {
     public $title = '';
     public $body = '';
@@ -250,7 +250,7 @@ if (0)
     // require 'BC_Virtual_Themed_pages.php';
     // this code segment requires the WordPress environment
 
-    $vp =  new Virtual_Themed_Pages_BC();
+    $vp =  new Virtual_Themed_Pages_MZoo();
     $vp->add('#/mypattern/unique#i', 'mytest_contentfunc');
     
     // Example of content generating function

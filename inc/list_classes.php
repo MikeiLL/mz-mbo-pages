@@ -3,6 +3,7 @@
 class MZ_MBO_Pages_Pages {
 
 	public $mz_mbo_globals;
+	public $mz_timeframe;
 	
 	public function __construct(){
 		require_once(WP_PLUGIN_DIR . '/mz-mindbody-api/' . 'inc/mz_mbo_init.inc');
@@ -21,12 +22,39 @@ class MZ_MBO_Pages_Pages {
     //$options = get_option( 'mz_mbo_pages_options','' );
     $mz_date = date_i18n('Y-m-d',current_time('timestamp'));
     $mz_timeframe = array_slice(mz_getDateRange($mz_date, 14), 0, 1);
-    $mz_timeframe = array_shift($mz_timeframe);
-    $mb = MZ_Mindbody_Init::instantiate_mbo_API();
+    $this->mz_timeframe = array_shift($mz_timeframe);
+    
+    // START caching configuration
+		$mz_list_classes_cache = "mz_list_classes_cache";
+
+		$mz_cache_reset = isset($this->mz_mbo_globals->options['mz_mindbody_clear_cache']) ? "on" : "off";
+
+		if ( $mz_cache_reset == "on" )
+		{
+			delete_transient( $mz_list_classes_cache );
+		}
+		
+		if (isset($_GET) || ( false === ( $mz_all_class_data = get_transient( $mz_list_classes_cache ) ) ) ) {
+			$mb = MZ_Mindbody_Init::instantiate_mbo_API();
+			if ($account == 0) {
+				$mz_all_class_data = $mb->GetClasses($mz_timeframe);
+			}else{
+				$mb->sourceCredentials['SiteIDs'][0] = $account; 
+				$mz_all_class_data = $mb->GetClasses($mz_timeframe);
+			}
+			
+			//echo $mb->debug();
+
+			//Cache the mindbody call for 24 hour2
+			// TODO make cache timeout configurable.
+			set_transient($mz_list_classes_cache, $mz_all_class_data, 7 * 60 * 60 * 24);
+		} // End if transient not set
+		// END caching configuration
+		
 		if ($mb == 'NO_SOAP_SERVICE') {
 			mz_pr($mb);
 			}
-		$mz_all_class_data = $mb->GetClasses($mz_timeframe);
+
 		if(!empty($mz_all_class_data['GetClassesResult']['Classes']['Class']))
 		{
 			$mz_days = $this->makeNumericArray($mz_all_class_data['GetClassesResult']['Classes']['Class']);
