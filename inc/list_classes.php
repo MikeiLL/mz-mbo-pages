@@ -2,7 +2,7 @@
 
 class MZ_MBO_Pages_Pages {
 
-	private $mz_mbo_globals;
+	public $mz_mbo_globals;
 	
 	public function __construct(){
 		require_once(WP_PLUGIN_DIR . '/mz-mindbody-api/' . 'inc/mz_mbo_init.inc');
@@ -45,14 +45,17 @@ class MZ_MBO_Pages_Pages {
 			$tbl->addCell(__('Level', 'mz-mindbody-api'), 'mz_sessionTypeName', 'header', array('scope'=>'header'));
 			$tbl->addTSection('tbody');
 			
-			foreach($mz_sorted as $key => $class) {   
+			foreach($mz_sorted as $unique => $class) {   
 		
 					//if ($class->className == 'Admin') {continue;}
 
 					// start building table rows
+					$link = new html_element('a');
+					$link->set('href', '/yoga_classes/'.$class->sclassid.'/');
+					$link->set('text', $class->className);
 					$row_css_classes = 'mz_description_holder mz_schedule_table mz_location_';
 					$tbl->addRow($row_css_classes);
-					$tbl->addCell($class->className);
+					$tbl->addCell($link->build());
 					$tbl->addCell($class->teacher);
 					$tbl->addCell($class->sessionTypeName);
 					$tbl->addCell($class->level);
@@ -63,11 +66,11 @@ class MZ_MBO_Pages_Pages {
 		return $tbl->display();
 	} // EOF mZ_mbo_pages_pages
 	
-	private function makeNumericArray($data) {
+	public function makeNumericArray($data) {
 		return (isset($data[0])) ? $data : array($data);
 	}
 	
-	private function sortClasses($mz_classes = array(), $time_format = "g:i a", $locations=1) {
+	public function sortClasses($mz_classes = array(), $time_format = "g:i a", $locations=1) {
 	
 		$mz_classesByDate = array();
 	
@@ -77,6 +80,7 @@ class MZ_MBO_Pages_Pages {
 		
 		$count = 0;
 		$all_classes = array();
+
 		foreach($mz_classes as $class)
 		{
 			
@@ -84,9 +88,9 @@ class MZ_MBO_Pages_Pages {
 																		$advanced=0, $show_registrants=0, $registrants_count=0, 
 																		$calendar_format='horizontal');
 																		
-			$all_classes[$count] = $single_event;
-			
-			$count++;
+			if(empty($all_classes[$single_event->className . '_' . $single_event->teacher . '_' . $single_event->level])) {
+				$all_classes[$single_event->className . '_' . $single_event->teacher . '_' . $single_event->level] = $single_event;
+				} 
 		}
 		return $all_classes;
 	}

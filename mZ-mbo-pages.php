@@ -323,8 +323,7 @@ function run_mz_mbo_pages() {
  
 run_mz_mbo_pages();
 	
-if (True)
-{
+
     
 	require_once(MZ_MBO_PAGES_DIR .'lib/virtual_page_maker.php'); 
     // this code segment requires the WordPress environment
@@ -349,31 +348,37 @@ function geo_seo_pageNew() {
 	// could wp_die() if id not extracted successfully...
 	$mb = MZ_Mindbody_Init::instantiate_mbo_API();
 	$mz_date = date_i18n('Y-m-d',current_time('timestamp'));
-	$mz_timeframe = array_slice(mz_getDateRange($mz_date, 7), 0, 1);
-		//While we still need to support php 5.2 and can't use [0] on above
-		$mz_timeframe = array_shift($mz_timeframe);
-	$mz_schedule_data = $mb->GetClasses($mz_timeframe);
-	foreach ($mz_schedule_data['GetClassesResult']['Classes']['Class'] as $class) {
-		if ($class['ClassScheduleID'] == $id){
-			//mz_pr($class);
+	$mz_timeframe = array_slice(mz_getDateRange($mz_date, 14), 0, 1);
+	//While we still need to support php 5.2 and can't use [0] on above
+	$mz_timeframe = array_shift($mz_timeframe);
+	$mz_all_class_data = $mb->GetClasses($mz_timeframe);
+	$page_maker = new MZ_MBO_Pages_Pages();
+	$mz_days = $page_maker->makeNumericArray($mz_all_class_data['GetClassesResult']['Classes']['Class']);
 			
-	$v->title = $class['ClassDescription']['Name'];
-	$classimage = $class['ClassDescription']['ImageURL'];
-	$staffImage = $class['Staff']['ImageURL'];
-	$level = $class['ClassDescription']['Level']['Name'];
-	$staffName = $class['Staff']['FirstName'] . ' ' . $class['Staff']['LastName'];
-	$page_body = '<p><img style="float:left" src="'.$classimage.'" />'.$class['ClassDescription']['Description'].'</p>';
-	$page_body .= '<ul><li>With '.$staffName.'</li>';
-	$page_body .= '<li>Level '.$level.'</li></ul>';
-	$page_body .= '<p><img src="'.$staffImage.'" />';
-	$v->body = $page_body;
-	$v->template = 'page'; // optional
-	$v->subtemplate = 'billing'; // optional
-	$v->slug = $url;
-		}
-	}
-    }
-}
+	$mz_sorted = $page_maker->sortClasses($mz_days, $page_maker->mz_mbo_globals->time_format, $locations=1);
+	foreach ($mz_sorted as $class) {
+			if ($class->sclassid != $id){
+				continue;
+			} else {
+
+				$v->title = $class->className;
+				$classimage = isset($class->classImage) ? $class->classImage : '';
+				$staffImage = isset($class->staffImage) ? $class->staffImage : '';
+				$level = $class->level;
+				$staffName = $class->teacher;
+				$page_body = '<p><img style="float:left" src="'.$classimage.'" />'.$class->classDescription.'</p>';
+				$page_body .= '<ul><li>With '.$staffName.'</li>';
+				$page_body .= '<li>Level '.$level.'</li></ul>';
+				$page_body .= '<p><img src="'.$staffImage.'" />';
+				$v->body = $page_body;
+				$v->template = 'page'; // optional
+				$v->subtemplate = 'billing'; // optional
+				$v->slug = $url;
+				break;
+			} // else
+		} // Foreach $mz_schedule_data['GetClassesResult']
+	} // geo_seoMagic
+
 	
 }//EOF Not Admin
 
