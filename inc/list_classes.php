@@ -42,7 +42,7 @@ class MZ_MBO_Pages_Pages {
 			$tbl->addCell(__('Class Name', 'mz-mindbody-api'), 'mz_classDetails', 'header', array('scope'=>'header'));
 			$tbl->addCell(__('Instructor', 'mz-mindbody-api'), 'mz_staffName', 'header', array('scope'=>'header'));
 			$tbl->addCell(__('Class Type', 'mz-mindbody-api'), 'mz_sessionTypeName', 'header', array('scope'=>'header'));
-			$tbl->addCell(__('Level', 'mz-mindbody-api'), 'mz_sessionTypeName', 'header', array('scope'=>'header'));
+			//$tbl->addCell(__('Level', 'mz-mindbody-api'), 'mz_sessionTypeName', 'header', array('scope'=>'header'));
 			$tbl->addTSection('tbody');
 			
 			foreach($mz_sorted as $unique => $class) {   
@@ -56,9 +56,9 @@ class MZ_MBO_Pages_Pages {
 					$row_css_classes = 'mz_description_holder mz_schedule_table mz_location_';
 					$tbl->addRow($row_css_classes);
 					$tbl->addCell($link->build());
-					$tbl->addCell($class->teacher);
+					$tbl->addCell($class->staffName);
 					$tbl->addCell($class->sessionTypeName);
-					$tbl->addCell($class->level);
+					//$tbl->addCell($class->level);
 			
 			} // foreach($mz_sorted
 					
@@ -86,14 +86,16 @@ class MZ_MBO_Pages_Pages {
 			
 			$single_event = new Single_event($class, $daynum="", $hide=array(), $locations, $hide_cancelled=0,
 																		$advanced=0, $show_registrants=0, $registrants_count=0, 
-																		$calendar_format='horizontal');
+																		$calendar_format='events');
 																		
-			if(empty($all_classes[$single_event->className . '_' . $single_event->teacher . '_' . $single_event->level])) {
-				$all_classes[$single_event->className . '_' . $single_event->teacher . '_' . $single_event->level] = $single_event;
+			if(empty($all_classes[$single_event->level . '_' . $single_event->sessionTypeName . '_' . $single_event->teacher . '_' . $single_event->className])) {
+				$all_classes[$single_event->level . '_' . $single_event->sessionTypeName . '_' . $single_event->teacher . '_' . $single_event->className] = $single_event;
 				} 
 		}
+		ksort($all_classes);
+		
 		return $all_classes;
-	}
+	} // EOF Sort Classes
 	
 } // EOF MZ_MBO_Pages_Pages Class
 

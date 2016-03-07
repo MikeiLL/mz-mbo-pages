@@ -366,10 +366,7 @@ function geo_seo_pageNew() {
 				$staffImage = isset($class->staffImage) ? $class->staffImage : '';
 				$level = $class->level;
 				$staffName = $class->teacher;
-				$page_body = '<p><img style="float:left" src="'.$classimage.'" />'.$class->classDescription.'</p>';
-				$page_body .= '<ul><li>With '.$staffName.'</li>';
-				$page_body .= '<li>Level '.$level.'</li></ul>';
-				$page_body .= '<p><img src="'.$staffImage.'" />';
+				$page_body = $class->class_details;
 				$v->body = $page_body;
 				$v->template = 'page'; // optional
 				$v->subtemplate = 'billing'; // optional
