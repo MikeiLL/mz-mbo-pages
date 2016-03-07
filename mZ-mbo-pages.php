@@ -40,8 +40,10 @@ function mbo_pages_has_mindbody_api() {
     }
 }
 
-function child_plugin_notice(){
-    ?><div class="error"><p>Sorry, but Child Plugin requires the Parent plugin to be installed and active.</p></div><?php
+if ( ! function_exists( 'child_plugin_notice' ) ) {
+	function child_plugin_notice(){
+			?><div class="error"><p>Sorry, but Child Plugin requires the Parent plugin to be installed and active.</p></div><?php
+	}
 }
 
 /**
