@@ -34,7 +34,7 @@ class MZ_MBO_Pages_Pages {
 			delete_transient( $mz_list_classes_cache );
 		}
 		
-		if (isset($_GET) || ( false === ( $mz_all_class_data = get_transient( $mz_list_classes_cache ) ) ) ) {
+		if ( false === ( $mz_all_class_data = get_transient( $mz_list_classes_cache ) ) ) {
 			$mb = MZ_Mindbody_Init::instantiate_mbo_API();
 			if ($account == 0) {
 				$mz_all_class_data = $mb->GetClasses($mz_timeframe);
@@ -43,6 +43,9 @@ class MZ_MBO_Pages_Pages {
 				$mz_all_class_data = $mb->GetClasses($mz_timeframe);
 			}
 			
+			if ($mb == 'NO_SOAP_SERVICE') {
+				mz_pr($mb);
+			}
 			//echo $mb->debug();
 
 			//Cache the mindbody call for 24 hour2
@@ -51,9 +54,6 @@ class MZ_MBO_Pages_Pages {
 		} // End if transient not set
 		// END caching configuration
 		
-		if ($mb == 'NO_SOAP_SERVICE') {
-			mz_pr($mb);
-			}
 
 		if(!empty($mz_all_class_data['GetClassesResult']['Classes']['Class']))
 		{

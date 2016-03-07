@@ -343,8 +343,12 @@ run_mz_mbo_pages();
 			// START caching configuration
 			$mz_single_event_cache = "mz_single_event_cache";
 			
-			$virtual_pager = new MZ_MBO_Pages_Pages();
-
+			
+			$mz_date = date_i18n('Y-m-d',current_time('timestamp'));
+			$mz_timeframe = array_slice(mz_getDateRange($mz_date, 14), 0, 1);
+			//While we still need to support php 5.2 and can't use [0] on above
+			$mz_timeframe = array_shift($mz_timeframe);
+			
 			$mz_cache_reset = isset($virtual_pager->mz_mbo_globals->options['mz_mindbody_clear_cache']) ? "on" : "off";
 
 			if ( $mz_cache_reset == "on" )
@@ -352,14 +356,16 @@ run_mz_mbo_pages();
 			delete_transient( $mz_single_event_cache );
 			}
 
-			if (isset($_GET) || ( false === ( $mz_single_event_data = get_transient( $mz_single_event_cache ) ) ) ) {
+			if ( false === ( $mz_single_event_data = get_transient( $mz_single_event_cache ) ) ) {
 			$mb = MZ_Mindbody_Init::instantiate_mbo_API();
 			if (True) { // In case we add account later
-				$mz_single_event_data = $mb->GetClasses($virtual_pager->mz_timeframe);
+				$mz_single_event_data = $mb->GetClasses($mz_timeframe);
 			}else{
 				$mb->sourceCredentials['SiteIDs'][0] = $account; 
-				$mz_single_event_data = $mb->GetClasses($virtual_pager->mz_timeframe);
+				$mz_single_event_data = $mb->GetClasses($mz_timeframe);
 			}
+			
+			$mz_single_event_data = $mb->GetClasses($mz_timeframe);
 
 			//echo $mb->debug();
 
@@ -373,11 +379,6 @@ run_mz_mbo_pages();
 			if (preg_match('#(\d+)#', $url, $m))
 					$id = $m[1];
 			// could wp_die() if id not extracted successfully...
-			$mz_date = date_i18n('Y-m-d',current_time('timestamp'));
-			$mz_timeframe = array_slice(mz_getDateRange($mz_date, 14), 0, 1);
-			//While we still need to support php 5.2 and can't use [0] on above
-			$mz_timeframe = array_shift($mz_timeframe);
-			$mz_single_event_data = $mb->GetClasses($mz_timeframe);
 			$page_maker = new MZ_MBO_Pages_Pages();
 			$mz_days = $page_maker->makeNumericArray($mz_single_event_data['GetClassesResult']['Classes']['Class']);
 			
