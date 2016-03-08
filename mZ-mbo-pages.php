@@ -343,11 +343,12 @@ run_mz_mbo_pages();
     // Must set $this->body even if empty string
   function mz_mbo_virtual_page_seo($v, $url) {
 			// START caching configuration
-			$mz_single_event_cache = "mz_single_event_cache";
+			$mz_list_classes_cache = "mz_list_classes_cache";
 			
 			
 			$mz_date = date_i18n('Y-m-d',current_time('timestamp'));
 			$mz_timeframe = array_slice(mz_getDateRange($mz_date, 14), 0, 1);
+
 			//While we still need to support php 5.2 and can't use [0] on above
 			$mz_timeframe = array_shift($mz_timeframe);
 			
@@ -355,10 +356,10 @@ run_mz_mbo_pages();
 
 			if ( $mz_cache_reset == "on" )
 			{
-			delete_transient( $mz_single_event_cache );
+			delete_transient( $mz_list_classes_cache );
 			}
 
-			if ( false === ( $mz_single_event_data = get_transient( $mz_single_event_cache ) ) ) {
+			if ( false === ( $mz_single_event_data = get_transient( $mz_list_classes_cache ) ) ) {
 			$mb = MZ_Mindbody_Init::instantiate_mbo_API();
 			if (True) { // In case we add account later
 				$mz_single_event_data = $mb->GetClasses($mz_timeframe);
@@ -373,7 +374,7 @@ run_mz_mbo_pages();
 
 			//Cache the mindbody call for 24 hour2
 			// TODO make cache timeout configurable.
-			set_transient($mz_single_event_cache, $mz_single_event_data, 28 * 60 * 60 * 24);
+			set_transient($mz_list_classes_cache, $mz_single_event_data, 7 * 60 * 60 * 24);
 			} // End if transient not set
 			// END caching configuration
 			// extract an id from the URL
@@ -383,9 +384,10 @@ run_mz_mbo_pages();
 			// could wp_die() if id not extracted successfully...
 			$page_maker = new MZ_MBO_Pages_Pages();
 			$mz_days = $page_maker->makeNumericArray($mz_single_event_data['GetClassesResult']['Classes']['Class']);
-			
+
 			$mz_sorted = $page_maker->sortClasses($mz_days, $page_maker->mz_mbo_globals->time_format, $locations=1);
 			foreach ($mz_sorted as $class) {
+			
 					if ($class->sclassid != $id){
 						continue;
 					} else {

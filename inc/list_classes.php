@@ -59,7 +59,6 @@ class MZ_MBO_Pages_Pages {
 		{
 			$mz_days = $this->makeNumericArray($mz_all_class_data['GetClassesResult']['Classes']['Class']);
 			
-			//mz_pr($mz_days);
 			$mz_sorted = $this->sortClasses($mz_days, $this->mz_mbo_globals->time_format, $locations);
 			
 			$tbl = new HTML_Table('', 'mz_all_our_classes' . ' ' . ' mz-schedule-horizontal mz-schedule-display');
@@ -74,9 +73,8 @@ class MZ_MBO_Pages_Pages {
 			$tbl->addTSection('tbody');
 			
 			foreach($mz_sorted as $unique => $class) {   
-		
-					//if ($class->className == 'Admin') {continue;}
 
+					//if ($class->className == 'Admin') {continue;}
 					// start building table rows
 					$link = new html_element('a');
 					$link->set('href', '/yoga_classes/'.$class->sclassid.'/');
@@ -112,6 +110,11 @@ class MZ_MBO_Pages_Pages {
 		foreach($mz_classes as $class)
 		{
 			
+			if ($class['Staff']['Name'] == 'Ashley Knight') {
+				//mz_pr($class['ClassScheduleID']);
+				//mz_pr(date_i18n('Y-m-d H:i:s', strtotime($class['StartDateTime'])));
+				//echo "<hr />";
+			}
 			$single_event = new Single_event($class, $daynum="", $hide=array(), $locations, $hide_cancelled=0,
 																		$advanced=0, $show_registrants=0, $registrants_count=0, 
 																		$calendar_format='events');
