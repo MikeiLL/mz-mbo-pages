@@ -179,7 +179,7 @@ class Virtual_Themed_Pages_MZoo
 	$wp_query->queried_object_id = $p->ID;
 	$wp_query->current_post = $p->ID;
 	$wp_query->post_count = 1;
-	mz_pr($p);
+
 	return array($p);
     }
 
