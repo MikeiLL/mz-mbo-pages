@@ -32,7 +32,6 @@ class MZ_MBO_Pages_Pages {
 		if ( $mz_cache_reset == "on" )
 		{
 			delete_transient( $mz_list_classes_cache );
-			mz_pr("deleting");
 		}
 		
 		if ( false === ( $mz_all_class_data = get_transient( $mz_list_classes_cache ) ) ) {

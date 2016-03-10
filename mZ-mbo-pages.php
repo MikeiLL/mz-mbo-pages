@@ -144,7 +144,6 @@ class MZ_MBO_Pages_Loader {
      * @param  string    $callback    The function that resides on the specified component.
      */ 
     public function add_filter( $hook, $component, $callback ) {
-    mz_pr($hook);
         $this->filters = $this->add( $this->filters, $hook, $component, $callback );
     }
     
