@@ -402,6 +402,7 @@ run_mz_mbo_pages();
 						$v->template = 'page'; // optional
 						$v->subtemplate = 'billing'; // optional
 						$v->slug = $url;
+						$v->itemID = $class->sclassid;
 						break;
 					} // else
 				} // Foreach $mz_schedule_data['GetClassesResult']

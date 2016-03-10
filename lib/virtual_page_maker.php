@@ -29,6 +29,7 @@ class Virtual_Themed_Pages_MZoo
 {
     public $title = '';
     public $body = '';
+    public $itemID = '';
     private $vpages = array();  // the main array of virtual pages
     private $mypath = '';
     public $blankcomments = "blank-comments.php";
@@ -136,7 +137,7 @@ class Virtual_Themed_Pages_MZoo
 	$p->post_status = 'publish';
 	$p->ping_status = 'closed';
 	$p->post_password = '';
-	$p->post_name = 'yoga_classes'; // slug
+	$p->post_name = 'yoga_classes/'.$this->itemID; // slug
 	$p->to_ping = '';
 	$p->pinged = '';
 	$p->modified = $p->post_date;
@@ -178,7 +179,7 @@ class Virtual_Themed_Pages_MZoo
 	$wp_query->queried_object_id = $p->ID;
 	$wp_query->current_post = $p->ID;
 	$wp_query->post_count = 1;
-
+	mz_pr($p);
 	return array($p);
     }
 
