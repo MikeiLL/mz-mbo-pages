@@ -99,7 +99,7 @@ class MZ_MBO_Pages_Pages {
 						
 					// Create post object
 						$yoga_class = array(
-							'post_title'    => wp_strip_all_tags( $class->className . ' ' . $class->teacher ),
+							'post_title'    => wp_strip_all_tags( $class->className . ' ' . html_entity_decode($class->teacher) ),
 							'post_content'  => $page_body,
 							'post_status'   => 'publish',
 							'post_type' => 'yogaevent',
