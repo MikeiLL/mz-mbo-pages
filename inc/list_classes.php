@@ -12,8 +12,8 @@ class MZ_MBO_Pages_Pages {
 
 	
 	public function mZ_mbo_pages_pages($message='no message', $atts=array(), $account=0) {
+		
 		$atts = shortcode_atts( array(
-			'type' => 'week',
 			'locations' => ''
 				), $atts );
 		
@@ -60,36 +60,46 @@ class MZ_MBO_Pages_Pages {
 			$mz_days = $this->makeNumericArray($mz_all_class_data['GetClassesResult']['Classes']['Class']);
 			
 			$mz_sorted = $this->sortClasses($mz_days, $this->mz_mbo_globals->time_format, $locations);
-			
-			$tbl = new HTML_Table('', 'mz_all_our_classes' . ' ' . ' mz-schedule-horizontal mz-schedule-display');
-			$tbl->addRow('header');
-			// arguments: cell content, class, type (default is 'data' for td, pass 'header' for th)
-			// can include associative array of optional additional attributes
-
-			$tbl->addCell(__('Class Name', 'mz-mindbody-api'), 'mz_classDetails', 'header', array('scope'=>'header'));
-			$tbl->addCell(__('Instructor', 'mz-mindbody-api'), 'mz_staffName', 'header', array('scope'=>'header'));
-			$tbl->addCell(__('Class Type', 'mz-mindbody-api'), 'mz_sessionTypeName', 'header', array('scope'=>'header'));
-			//$tbl->addCell(__('Level', 'mz-mindbody-api'), 'mz_sessionTypeName', 'header', array('scope'=>'header'));
-			$tbl->addTSection('tbody');
-			
-			//delete all previously created posts:
 				 
 			$args = array(
 				'numberposts' => 200,
-				'post_type' =>'mzclassorevent'
+				'post_type' =>'yogaevent'
 			);
 			
 			$all_yoga_classes = get_posts( $args );
-			
+
 			if (is_array($all_yoga_classes)) {
-				 foreach ($all_yoga_classes as $post) {
-			// what you want to do;
-						 wp_delete_post( $post->ID, true);
-						 echo "Deleted Post: ".$post->title."\r\n";
+				foreach ($all_yoga_classes as $key => $post) {
+					// Compare each item returned from WPDB to MBO results
+					foreach($mz_sorted as $unique => $class) {  
+						// Define Content to update (only the description:
+							$page_body = $class->class_details;
+							$my_mbo_title = wp_strip_all_tags( $class->className . ' ' . html_entity_decode($class->teacher));
+							if ($post->post_title == $my_mbo_title) :
+								$yoga_class = array(
+									'ID' => $post->ID,
+									'post_content'  => $page_body
+								);
+								// If title already exists just update the content in WPDB
+								wp_update_post( $yoga_class );
+								// Remove this item from the WPDB array
+								unset($all_yoga_classes[$key]);
+								// Remove this item from the MBO result collection
+								unset($mz_sorted[$unique]);
+							endif;
+						}
 				 }
 			}
 			
-			foreach($mz_sorted as $unique => $class) {   
+			if (is_array($all_yoga_classes)) {
+				foreach ($all_yoga_classes as $key => $post) {
+					// Now we'll clear out the rest of the WPDB CPT items
+					wp_delete_post( $post->ID, true);
+				}
+			}
+							 
+			foreach($mz_sorted as $unique => $class) { 
+				// Create new CPT items for the rest of results from MBO not filtered by above update  
 					// Define Content:
 						$classimage = isset($class->classImage) ? $class->classImage : '';
 						$staffImage = isset($class->staffImage) ? $class->staffImage : '';
@@ -104,33 +114,31 @@ class MZ_MBO_Pages_Pages {
 							'post_status'   => 'publish',
 							'post_type' => 'yogaevent',
 							'post_author'   => 1,
-							'guid' => $class->sclassid,
 							'comment_status' => 'closed'
 						);
  
 						// Insert the post into the database
 						$post_id = wp_insert_post( $yoga_class );
-
-					//if ($class->className == 'Admin') {continue;}
-					// start building table rows
-					$link = new html_element('a');
-					$link->set('href', '/yoga-event/'.$post_id.'/');
-					$link->set('text', $class->className);
-					$row_css_classes = 'mz_description_holder mz_schedule_table mz_location_';
-					$tbl->addRow($row_css_classes);
-					$tbl->addCell($link->build());
-					$tbl->addCell($class->staffName);
-					$tbl->addCell($class->sessionTypeName);
-					//$tbl->addCell($class->level);
-					/*$v->title = $class->className;
-
-						$v->body = $page_body;*/
-						
 			
 			} // foreach($mz_sorted
 					
 		}//EOF if Not Empty Classes
-		return $tbl->display();
+$type = 'yogaevent';
+$args=array(
+  'post_type' => $type,
+  'post_status' => 'publish',
+  'posts_per_page' => -1,
+  'ignore_sticky_posts'=> 1);
+
+$my_query = null;
+$my_query = new WP_Query($args);
+if( $my_query->have_posts() ) {
+  while ($my_query->have_posts()) : $my_query->the_post(); ?>
+    <p><a href="<?php the_permalink() ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>"><?php the_title(); ?></a></p>
+    <?php
+  endwhile;
+}
+wp_reset_query();  // Restore global post data stomped by the_post().
 	} // EOF mZ_mbo_pages_pages
 	
 	public function makeNumericArray($data) {

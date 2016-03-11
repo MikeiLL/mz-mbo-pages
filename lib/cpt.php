@@ -176,7 +176,7 @@ class CPT {
 
         // Register the post type.
         $this->add_action( 'init', array( &$this, 'register_post_type' ) );
-
+        
         // Register exisiting taxonomies.
         $this->add_action( 'init', array( &$this, 'register_exisiting_taxonomies' ) );
 
@@ -192,6 +192,7 @@ class CPT {
         // rewrite post update messages
         $this->add_filter( 'post_updated_messages', array( &$this, 'updated_messages' ) );
         $this->add_filter( 'bulk_post_updated_messages', array( &$this, 'bulk_updated_messages' ), 10, 2 );
+
     }
 
     /**
@@ -431,6 +432,7 @@ class CPT {
 
             // Register the post type.
             register_post_type( $this->post_type_name, $options );
+            //$this->flush();
         }
     }
 

@@ -304,11 +304,15 @@ function create_mz_event_cpt() {
 		// include the custom post type class
 		require_once(MZ_MBO_PAGES_DIR . 'lib/cpt.php');
 		// create a book custom post type
-		$books = new CPT('Yoga Event');
+		$yoga_events = new CPT('Yoga Event');
 		// create a genre taxonomy
-		$books->register_taxonomy('yoga event');
+		$yoga_events->register_taxonomy('class');
+		// Set has'archive to true
+		$yoga_events->set('has_archive', True);
+		
+		$yoga_events->set('hierarchical', False);
 		// define the columns to appear on the admin edit screen
-		$books->columns(array(
+		$yoga_events->columns(array(
 				'cb' => '<input type="checkbox" />',
 				'title' => __('Title'),
 				'teacher' => __('Teacher'),
@@ -318,23 +322,15 @@ function create_mz_event_cpt() {
 		));
 		
 		// Our text domain to match plugin
-		$books->set_textdomain('mz-mbo-pages');
-		// populate the price column
-		$books->populate_column('price', function($column, $post) {
-				echo "£" . get_field('price'); // ACF get_field() function
-		}); 
-		// populate the ratings column
-		$books->populate_column('rating', function($column, $post) {
-				echo get_field('rating') . '/5'; // ACF get_field() function
-		});
+		$yoga_events->set_textdomain('mz-mbo-pages');
 		// make rating and price columns sortable
-		$books->sortable(array(
+		$yoga_events->sortable(array(
 				'teacher' => array('teacher', true),
 				'time' => array('time', true)
 		));
 		// use "pages" icon for post type
-		$books->menu_icon("dashicons-book-alt");
-		//mz_pr($books);
+		$yoga_events->menu_icon("dashicons-book-alt");
+		//mz_pr($yoga_events);
 	}
 	
 	add_action('plugins_loaded', 'create_mz_event_cpt');
@@ -357,90 +353,6 @@ function run_mz_mbo_pages() {
 }
  
 run_mz_mbo_pages();
-  
-  
-	require_once(MZ_MBO_PAGES_DIR .'lib/virtual_page_maker.php'); 
-    // this code segment requires the WordPress environment
-
-    //$vp =  new Virtual_Themed_Pages_MZoo();
-    //$vp->add('#/yoga_classes/\d*#i', 'mytest_contentfunc');
-   add_action('init', 'mz_mbo_virtual_page');
-
-	function mz_mbo_virtual_page() {
-    $vp = new Virtual_Themed_Pages_MZoo();
-    $vp->add('#/yoga__classes/\d*#i', 'mz_mbo_virtual_page_seo');
-}
-
-    // Example of content generating function
-    // Must set $this->body even if empty string
-  function mz_mbo_virtual_page_seo($v, $url) {
-			// START caching configuration
-			$mz_list_classes_cache = "mz_list_classes_cache";
-			
-			
-			
-			mz_pr($url);
-			$mz_date = date_i18n('Y-m-d',current_time('timestamp'));
-			$mz_timeframe = array_slice(mz_getDateRange($mz_date, 14), 0, 1);
-
-			//While we still need to support php 5.2 and can't use [0] on above
-			$mz_timeframe = array_shift($mz_timeframe);
-			
-			$mz_cache_reset = isset($virtual_pager->mz_mbo_globals->options['mz_mindbody_clear_cache']) ? "on" : "off";
-
-			if ( $mz_cache_reset == "on" )
-			{
-			delete_transient( $mz_list_classes_cache );
-			}
-
-			if ( false === ( $mz_single_event_data = get_transient( $mz_list_classes_cache ) ) ) {
-			$mb = MZ_Mindbody_Init::instantiate_mbo_API();
-			if (True) { // In case we add account later
-				$mz_single_event_data = $mb->GetClasses($mz_timeframe);
-			}else{
-				$mb->sourceCredentials['SiteIDs'][0] = $account; 
-				$mz_single_event_data = $mb->GetClasses($mz_timeframe);
-			}
-			
-			$mz_single_event_data = $mb->GetClasses($mz_timeframe);
-
-			//echo $mb->debug();
-
-			//Cache the mindbody call for 24 hour2
-			// TODO make cache timeout configurable.
-			set_transient($mz_list_classes_cache, $mz_single_event_data, 7 * 60 * 60 * 24);
-			} // End if transient not set
-			// END caching configuration
-			// extract an id from the URL
-			$id = 'none';
-			if (preg_match('#(\d+)#', $url, $m))
-					$id = $m[1];
-			// could wp_die() if id not extracted successfully...
-			//$page_maker = new MZ_MBO_Pages_Pages();
-			$mz_days = $page_maker->makeNumericArray($mz_single_event_data['GetClassesResult']['Classes']['Class']);
-
-			$mz_sorted = $page_maker->sortClasses($mz_days, $page_maker->mz_mbo_globals->time_format, $locations=1);
-			foreach ($mz_sorted as $class) {
-			
-						//mz_pr($url);
-					if ($class->sclassid != $id){
-						continue;
-					} else {
-						/*$v->title = $class->className;
-						$classimage = isset($class->classImage) ? $class->classImage : '';
-						$staffImage = isset($class->staffImage) ? $class->staffImage : '';
-						$level = $class->level;
-						$staffName = $class->teacher;
-						$page_body = $class->class_details;
-						$v->body = $page_body;
-						$v->template = 'page'; // optional
-						$v->subtemplate = 'billing'; // optional
-						$v->slug = $url;
-						$v->itemID = $class->sclassid;*/
-						break;
-					} // else
-				} // Foreach $mz_schedule_data['GetClassesResult']
-			} // geo_seoMagic
 
 	
 }//EOF Not Admin
