@@ -28,6 +28,7 @@ define( 'MZ_MBO_PAGES_DIR', plugin_dir_path( __FILE__ ) );
 define( 'MZ_MBO_PAGES_URL', plugin_dir_url( __FILE__ ) );
 
 add_action( 'admin_init', 'mbo_pages_has_mindbody_api' );
+
 function mbo_pages_has_mindbody_api() {
     if ( is_admin() && current_user_can( 'activate_plugins' ) && !is_plugin_active( 'mz-mindbody-api/mZ-mindbody-api.php' ) ) {
         add_action( 'admin_notices', 'child_plugin_notice' );
@@ -74,14 +75,6 @@ class MZ_MBO_Pages_Admin {
         require_once MZ_MBO_PAGES_DIR .'lib/functions.php';
         require_once MZ_MBO_PAGES_DIR .'inc/list_classes.php';
         }
- 
-    public function run_sandbox($message) {
- 	
- 				$mz_mbo_pages = new MZ_MBO_Pages_Pages();
- 		
-        $mz_mbo_pages->mZ_mbo_pages_pages($message);
-
-    		}
 }
 
 /**
@@ -223,7 +216,7 @@ class MZ_MBO_Pages {
 		//Functions
 
 		require_once MZ_MBO_PAGES_DIR .'lib/functions.php';
-        	
+		
         $this->loader = new MZ_MBO_Pages_Loader();
         
     }
@@ -236,10 +229,11 @@ class MZ_MBO_Pages {
     }
     
     private function define_main_hooks() {
- 
+        
         $this->loader->add_action( 'init', $this, 'myStartSession' );
         $this->loader->add_action( 'wp_logout', $this, 'myStartSession' );
         $this->loader->add_action( 'wp_login', $this, 'myEndSession' );
+        
         
         }
 
@@ -252,7 +246,7 @@ class MZ_MBO_Pages {
     public function myEndSession() {
 			session_destroy ();
 		}
- 
+		
  		private function add_shortcodes() {
  	
  				$mz_mbo_pages = new MZ_MBO_Pages_Pages();
@@ -272,8 +266,9 @@ class MZ_MBO_Pages {
 }
 
 function MZ_MBO_Pages_load_textdomain() {
-	load_plugin_textdomain('mz-mbo-pages',false,dirname(plugin_basename(__FILE__)) . '/languages');
+		load_plugin_textdomain('mz-mbo-pages',false,dirname(plugin_basename(__FILE__)) . '/languages');
 	}
+	
 add_action( 'plugins_loaded', 'MZ_MBO_Pages_load_textdomain' );
 
 function mZ_mbo_pages_activation() {
@@ -304,7 +299,46 @@ if (!function_exists( 'mZ_latest_jquery' )){
 	add_action('wp_enqueue_scripts', 'mZ_latest_jquery');
 }
 
-
+function create_mz_event_cpt() {
+	
+		// include the custom post type class
+		require_once(MZ_MBO_PAGES_DIR . 'lib/cpt.php');
+		// create a book custom post type
+		$books = new CPT('Yoga Event');
+		// create a genre taxonomy
+		$books->register_taxonomy('yoga event');
+		// define the columns to appear on the admin edit screen
+		$books->columns(array(
+				'cb' => '<input type="checkbox" />',
+				'title' => __('Title'),
+				'teacher' => __('Teacher'),
+				'time' => __('Time'),
+				'level' => __('Level'),
+				'date' => __('Date')
+		));
+		
+		// Our text domain to match plugin
+		$books->set_textdomain('mz-mbo-pages');
+		// populate the price column
+		$books->populate_column('price', function($column, $post) {
+				echo "£" . get_field('price'); // ACF get_field() function
+		}); 
+		// populate the ratings column
+		$books->populate_column('rating', function($column, $post) {
+				echo get_field('rating') . '/5'; // ACF get_field() function
+		});
+		// make rating and price columns sortable
+		$books->sortable(array(
+				'teacher' => array('teacher', true),
+				'time' => array('time', true)
+		));
+		// use "pages" icon for post type
+		$books->menu_icon("dashicons-book-alt");
+		//mz_pr($books);
+	}
+	
+	add_action('plugins_loaded', 'create_mz_event_cpt');
+ 
     
 if ( is_admin() )
 {     
@@ -323,9 +357,8 @@ function run_mz_mbo_pages() {
 }
  
 run_mz_mbo_pages();
-	
-
-    
+  
+  
 	require_once(MZ_MBO_PAGES_DIR .'lib/virtual_page_maker.php'); 
     // this code segment requires the WordPress environment
 
@@ -335,7 +368,7 @@ run_mz_mbo_pages();
 
 	function mz_mbo_virtual_page() {
     $vp = new Virtual_Themed_Pages_MZoo();
-    $vp->add('#/yoga_classes/\d*#i', 'mz_mbo_virtual_page_seo');
+    $vp->add('#/yoga__classes/\d*#i', 'mz_mbo_virtual_page_seo');
 }
 
     // Example of content generating function
@@ -345,6 +378,8 @@ run_mz_mbo_pages();
 			$mz_list_classes_cache = "mz_list_classes_cache";
 			
 			
+			
+			mz_pr($url);
 			$mz_date = date_i18n('Y-m-d',current_time('timestamp'));
 			$mz_timeframe = array_slice(mz_getDateRange($mz_date, 14), 0, 1);
 
@@ -381,17 +416,17 @@ run_mz_mbo_pages();
 			if (preg_match('#(\d+)#', $url, $m))
 					$id = $m[1];
 			// could wp_die() if id not extracted successfully...
-			$page_maker = new MZ_MBO_Pages_Pages();
+			//$page_maker = new MZ_MBO_Pages_Pages();
 			$mz_days = $page_maker->makeNumericArray($mz_single_event_data['GetClassesResult']['Classes']['Class']);
 
 			$mz_sorted = $page_maker->sortClasses($mz_days, $page_maker->mz_mbo_globals->time_format, $locations=1);
 			foreach ($mz_sorted as $class) {
 			
+						//mz_pr($url);
 					if ($class->sclassid != $id){
 						continue;
 					} else {
-
-						$v->title = $class->className;
+						/*$v->title = $class->className;
 						$classimage = isset($class->classImage) ? $class->classImage : '';
 						$staffImage = isset($class->staffImage) ? $class->staffImage : '';
 						$level = $class->level;
@@ -401,7 +436,7 @@ run_mz_mbo_pages();
 						$v->template = 'page'; // optional
 						$v->subtemplate = 'billing'; // optional
 						$v->slug = $url;
-						$v->itemID = $class->sclassid;
+						$v->itemID = $class->sclassid;*/
 						break;
 					} // else
 				} // Foreach $mz_schedule_data['GetClassesResult']

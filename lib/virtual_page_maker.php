@@ -82,7 +82,7 @@ class Virtual_Themed_Pages_MZoo
 	    return;
 	    }
 
-	// setup hooks and filters to generate virtual movie page
+	// setup hooks and filters to generate virtual yoga class page
 	add_action('template_redirect', array(&$this, 'template_redir'));
 	add_filter('the_posts', array(&$this, 'vtp_createdummypost'));
 	
@@ -90,7 +90,7 @@ class Virtual_Themed_Pages_MZoo
 	// a page is rather meaningless.
 	// This requires the blank_comments.php file be provided
 	add_filter('comments_template', array(&$this, 'disable_comments'), 11);
-
+	
 	// Call user content generation function
 	// Called last so it can remove any filters it doesn't like
 	// It should set:
@@ -137,14 +137,14 @@ class Virtual_Themed_Pages_MZoo
 	$p->post_status = 'publish';
 	$p->ping_status = 'closed';
 	$p->post_password = '';
-	$p->post_name = 'yoga_classes/'.$this->itemID; // slug
+	$p->post_name = 'yoga_classes'; // slug
 	$p->to_ping = '';
 	$p->pinged = '';
 	$p->modified = $p->post_date;
 	$p->modified_gmt = $p->post_date_gmt;
 	$p->post_content_filtered = '';
 	$p->post_parent = 0;
-	$p->guid = get_home_url('/' . $p->post_name); // use url instead?
+	$p->guid = get_home_url('/' . 'yoga_classes'); // use url instead?
 	$p->menu_order = 0;
 	$p->post_type = 'page';
 	$p->post_mime_type = '';
@@ -163,7 +163,6 @@ class Virtual_Themed_Pages_MZoo
 	$wp->query = array();
 	$wp_query->query_vars['error'] = '';
 	$wp_query->is_404 = FALSE;
-
 	$wp_query->current_post = $p->ID;
 	$wp_query->found_posts = 1;
 	$wp_query->post_count = 1;
@@ -179,7 +178,7 @@ class Virtual_Themed_Pages_MZoo
 	$wp_query->queried_object_id = $p->ID;
 	$wp_query->current_post = $p->ID;
 	$wp_query->post_count = 1;
-
+	
 	return array($p);
     }
 

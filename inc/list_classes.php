@@ -72,12 +72,49 @@ class MZ_MBO_Pages_Pages {
 			//$tbl->addCell(__('Level', 'mz-mindbody-api'), 'mz_sessionTypeName', 'header', array('scope'=>'header'));
 			$tbl->addTSection('tbody');
 			
+			//delete all previously created posts:
+				 
+			$args = array(
+				'numberposts' => 200,
+				'post_type' =>'mzclassorevent'
+			);
+			
+			$all_yoga_classes = get_posts( $args );
+			
+			if (is_array($all_yoga_classes)) {
+				 foreach ($all_yoga_classes as $post) {
+			// what you want to do;
+						 wp_delete_post( $post->ID, true);
+						 echo "Deleted Post: ".$post->title."\r\n";
+				 }
+			}
+			
 			foreach($mz_sorted as $unique => $class) {   
+					// Define Content:
+						$classimage = isset($class->classImage) ? $class->classImage : '';
+						$staffImage = isset($class->staffImage) ? $class->staffImage : '';
+						$level = $class->level;
+						$staffName = $class->teacher;
+						$page_body = $class->class_details;
+						
+					// Create post object
+						$yoga_class = array(
+							'post_title'    => wp_strip_all_tags( $class->className . ' ' . $class->teacher ),
+							'post_content'  => $page_body,
+							'post_status'   => 'publish',
+							'post_type' => 'yogaevent',
+							'post_author'   => 1,
+							'guid' => $class->sclassid,
+							'comment_status' => 'closed'
+						);
+ 
+						// Insert the post into the database
+						$post_id = wp_insert_post( $yoga_class );
 
 					//if ($class->className == 'Admin') {continue;}
 					// start building table rows
 					$link = new html_element('a');
-					$link->set('href', '/yoga_classes/'.$class->sclassid.'/');
+					$link->set('href', '/yoga-event/'.$post_id.'/');
 					$link->set('text', $class->className);
 					$row_css_classes = 'mz_description_holder mz_schedule_table mz_location_';
 					$tbl->addRow($row_css_classes);
@@ -85,6 +122,10 @@ class MZ_MBO_Pages_Pages {
 					$tbl->addCell($class->staffName);
 					$tbl->addCell($class->sessionTypeName);
 					//$tbl->addCell($class->level);
+					/*$v->title = $class->className;
+
+						$v->body = $page_body;*/
+						
 			
 			} // foreach($mz_sorted
 					

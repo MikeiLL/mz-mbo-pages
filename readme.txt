@@ -1,4 +1,4 @@
-=== MZ MBO Sandbox Interface ===
+=== MZ MBO Pages Interface ===
 Contributors: mikeill
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=A95ZEELLHGECE
 Tags: mindbody

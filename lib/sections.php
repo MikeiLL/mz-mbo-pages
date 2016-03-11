@@ -15,7 +15,7 @@ add_action ('admin_menu', 'mz_mbo_pages_settings_menu');
 
 	function mz_mbo_pages_settings_menu() {
 		//create submenu under Settings
-		add_options_page ('MZ MBO Sandbox Settings', esc_attr__('MBO Sandbox Interface', 'mz_mbo_pages'),
+		add_options_page ('MZ MBO Pages Settings', esc_attr__('MBO Pages Interface', 'mz_mbo_pages'),
 		'manage_options', __FILE__, 'mz_mbo_pages_settings_page');
 	}
 
@@ -44,7 +44,7 @@ add_action ('admin_menu', 'mz_mbo_pages_settings_menu');
 		
 		add_settings_section(
 			'mz_mbo_pages',
-			'MZ MBO Sandbox',
+			'MZ MBO Pages',
 			'mz_mbo_pages_main',
 			'mz_mbo_pages'
 		);
