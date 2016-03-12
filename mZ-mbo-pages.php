@@ -304,7 +304,7 @@ function create_mz_event_cpt() {
 		// include the custom post type class
 		require_once(MZ_MBO_PAGES_DIR . 'lib/cpt.php');
 		// create a book custom post type
-		$yoga_events = new CPT('Yoga Event');
+		$yoga_events = new CPT('Yoga-Event');
 		// create a genre taxonomy
 		$yoga_events->register_taxonomy('class');
 		// Set has'archive to true

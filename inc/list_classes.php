@@ -63,7 +63,7 @@ class MZ_MBO_Pages_Pages {
 				 
 			$args = array(
 				'numberposts' => 200,
-				'post_type' =>'yogaevent'
+				'post_type' =>'yoga-event'
 			);
 			
 			$all_yoga_classes = get_posts( $args );
@@ -112,7 +112,7 @@ class MZ_MBO_Pages_Pages {
 							'post_title'    => wp_strip_all_tags( $class->className . ' ' . html_entity_decode($class->teacher) ),
 							'post_content'  => $page_body,
 							'post_status'   => 'publish',
-							'post_type' => 'yogaevent',
+							'post_type' => 'yoga-event',
 							'post_author'   => 1,
 							'comment_status' => 'closed'
 						);
@@ -123,22 +123,31 @@ class MZ_MBO_Pages_Pages {
 			} // foreach($mz_sorted
 					
 		}//EOF if Not Empty Classes
-$type = 'yogaevent';
-$args=array(
-  'post_type' => $type,
-  'post_status' => 'publish',
-  'posts_per_page' => -1,
-  'ignore_sticky_posts'=> 1);
-
-$my_query = null;
-$my_query = new WP_Query($args);
-if( $my_query->have_posts() ) {
-  while ($my_query->have_posts()) : $my_query->the_post(); ?>
-    <p><a href="<?php the_permalink() ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>"><?php the_title(); ?></a></p>
-    <?php
-  endwhile;
+		//List Post Types
+foreach ( get_post_types( '', 'names' ) as $post_type ) {
+   echo '<p>' . $post_type . '</p>';
 }
-wp_reset_query();  // Restore global post data stomped by the_post().
+
+	$type = 'yoga-event';
+	$args=array(
+		'post_type' => $type,
+		'post_status' => 'publish',
+		'posts_per_page' => -1,
+		'ignore_sticky_posts'=> 1);
+
+	$my_query = null;
+	$my_query = new WP_Query($args);
+	if( $my_query->have_posts() ) {
+		while ($my_query->have_posts()) : 
+		$my_query->the_post(); 
+		?>
+	
+			<p><a href="<?php the_permalink() ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>"><?php the_title(); ?> </a></p>
+		
+		<?php
+	
+		endwhile;
+  	}
 	} // EOF mZ_mbo_pages_pages
 	
 	public function makeNumericArray($data) {
