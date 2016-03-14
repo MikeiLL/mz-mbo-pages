@@ -31,7 +31,7 @@ get_header(); ?>
 			$tbl->addCell(__('Class Name', 'mz-mindbody-api'), 'mz_classDetails', 'header', array('scope'=>'header'));
 			$tbl->addCell(__('Instructor', 'mz-mindbody-api'), 'mz_staffName', 'header', array('scope'=>'header'));
 			$tbl->addCell(__('Class Type', 'mz-mindbody-api'), 'mz_sessionTypeName', 'header', array('scope'=>'header'));
-			$tbl->addCell(__('Level', 'mz-mindbody-api'), 'mz_sessionTypeName', 'header', array('scope'=>'header'));
+			//$tbl->addCell(__('Level', 'mz-mindbody-api'), 'mz_sessionTypeName', 'header', array('scope'=>'header'));
 			$tbl->addTSection('tbody');
 			?>
 
@@ -48,7 +48,7 @@ get_header(); ?>
 					$tbl->addCell($link->build());
 					$tbl->addCell(get_field('teacher'));
 					$tbl->addCell(get_field('type'));
-					$tbl->addCell(get_field('level'));
+					//$tbl->addCell(get_field('level'));
 					?>
 			<?php endwhile; ?>
 			<?php echo $tbl->display() ?>

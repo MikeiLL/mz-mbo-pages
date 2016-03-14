@@ -27,6 +27,49 @@ if ( ! function_exists( 'mz_pr' ) ) {
 	}
 }
 
+//BOF create yoga-event CPT
+function create_mz_event_cpt() {
+	
+		// include the custom post type class
+		require_once(MZ_MBO_PAGES_DIR . 'lib/cpt.php');
+		// create a book custom post type
+		$yoga_events = new CPT('yoga-event');
+		// create a genre taxonomy
+		$yoga_events->register_taxonomy('event-type');
+		// Set has'archive to true
+		$yoga_events->set('has_archive', True);
+		// This may or may not be necessary and desired
+		$yoga_events->set('hierarchical', False);
+		// Someone says to do this for archive page reqrite to work
+		$yoga_events->set('rewrite', 'yoga-event');
+		// Match plugin text domain
+		$yoga_events->set_textdomain('mz-mbo-pages');
+		// define the columns to appear on the admin edit screen
+		$yoga_events->columns(array(
+				'cb' => '<input type="checkbox" />',
+				'title' => __('Title'),
+				'teacher' => __('Teacher'),
+				'time' => __('Time'),
+				'level' => __('Level'),
+				'type' => __('Type')
+		));
+		
+		// Our text domain to match plugin
+		$yoga_events->set_textdomain('mz-mbo-pages');
+		// make rating and price columns sortable
+		$yoga_events->sortable(array(
+				'teacher' => array('teacher', true),
+				'time' => array('time', true),
+				'type' => array('type', true)
+		));
+		// use "pages" icon for post type
+		$yoga_events->menu_icon("dashicons-book-alt");
+		//mz_pr($yoga_events);
+	}
+	
+	add_action('plugins_loaded', 'create_mz_event_cpt');
+//EOF create yoga-event CPT
+ 
 // BOF Add our own page template
 // http://wordpress.stackexchange.com/questions/88371/how-do-you-create-an-archive-for-a-custom-post-type-from-a-plugin
 
@@ -67,6 +110,7 @@ function mbo_pages_locate_plugin_template($template_names, $load = false, $requi
     return $located;
 }
 // EOF Add our own page template
+
 // Include CPT in search results
 function search_filter($query) {
   if ( !is_admin() && $query->is_main_query() ) {
@@ -78,6 +122,7 @@ function search_filter($query) {
 
 add_action('pre_get_posts','search_filter');
 
+// Everride posts count result for yoga-events
 function list_all_yoga_events( $query ) {
     if ( is_admin() || ! $query->is_main_query() )
         return;
@@ -88,9 +133,13 @@ function list_all_yoga_events( $query ) {
         return;
     }
 
-    if ( is_post_type_archive( 'yoga-event' ) ) {
+    if( isset($query->query_vars['post_type']) && $query->query_vars['post_type'] == 'yoga-event' ) {
         // Display 50 posts for a custom post type called 'yoga-event'
-        $query->set( 'posts_per_page', -1 );
+        $query->set('posts_per_page', -1 );
+				$query->set('orderby', 'meta_value');	
+				$query->set('meta_key', 'type');	 
+				$query->set('order', 'ASC'); 
+        
         return;
     }
 }
