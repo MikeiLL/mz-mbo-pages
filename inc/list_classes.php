@@ -81,7 +81,12 @@ class MZ_MBO_Pages_Pages {
 									'post_content'  => $page_body
 								);
 								// If title already exists just update the content in WPDB
-								wp_update_post( $yoga_class );
+								$post_id = wp_update_post( $yoga_class );
+								add_post_meta( $post_id, 'title', $class->className );
+								add_post_meta( $post_id, 'teacher', $class->staffName );
+								add_post_meta( $post_id, 'time', $class->startTime );
+								add_post_meta( $post_id, 'type', $class->sessionTypeName );
+								add_post_meta( $post_id, 'level', $class->level );wp_update_post( $yoga_class );
 								// Remove this item from the WPDB array
 								unset($all_yoga_classes[$key]);
 								// Remove this item from the MBO result collection
@@ -119,7 +124,11 @@ class MZ_MBO_Pages_Pages {
  
 						// Insert the post into the database
 						$post_id = wp_insert_post( $yoga_class );
-			
+						add_post_meta( $post_id, 'title', $class->className );
+						add_post_meta( $post_id, 'teacher', $class->staffName );
+						add_post_meta( $post_id, 'time', $class->startTime );
+						add_post_meta( $post_id, 'type', $class->sessionTypeName );
+						add_post_meta( $post_id, 'level', $class->level );
 			} // foreach($mz_sorted
 					
 		}//EOF if Not Empty Classes
@@ -134,6 +143,10 @@ foreach ( get_post_types( '', 'names' ) as $post_type ) {
 		'post_status' => 'publish',
 		'posts_per_page' => -1,
 		'ignore_sticky_posts'=> 1);
+		
+	//let's look at our CPT:	
+	$type_obj = get_post_type_object($type);
+	mz_pr($type_obj);
 
 	$my_query = null;
 	$my_query = new WP_Query($args);
@@ -147,7 +160,8 @@ foreach ( get_post_types( '', 'names' ) as $post_type ) {
 		<?php
 	
 		endwhile;
-  	}
+  	} // list of yoga-event items
+  	mz_pr(get_post_type_archive_link( 'yoga-event' ));
 	} // EOF mZ_mbo_pages_pages
 	
 	public function makeNumericArray($data) {

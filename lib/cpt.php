@@ -418,7 +418,8 @@ class CPT {
             'public' => true,
             'rewrite' => array(
                 'slug' => $slug,
-            )
+            ),
+            'has_archive' => True
         );
 
         // Merge user submitted options with defaults.

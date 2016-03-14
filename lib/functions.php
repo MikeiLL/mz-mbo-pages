@@ -27,4 +27,42 @@ if ( ! function_exists( 'mz_pr' ) ) {
 	}
 }
 
+add_filter('archive_template', 'mbo_pages_yoga_event_template');
+
+function mbo_pages_yoga_event_template($template) {
+    global $wp_query;
+    if (is_post_type_archive('yoga-event')) {
+        $templates[] = 'archive-yoga-event.php';
+        $template = mbo_pages_locate_plugin_template($templates);
+    }
+    return $template;
+}
+
+function mbo_pages_locate_plugin_template($template_names, $load = false, $require_once = true ) {
+    if (!is_array($template_names)) {
+        return '';
+    }
+    $located = '';  
+    $this_plugin_dir = MZ_MBO_PAGES_DIR ;
+    foreach ( $template_names as $template_name ) {
+        if ( !$template_name )
+            continue;
+        if ( file_exists(STYLESHEETPATH . '/' . $template_name)) {
+            $located = STYLESHEETPATH . '/' . $template_name;
+            break;
+        } elseif ( file_exists(TEMPLATEPATH . '/' . $template_name) ) {
+            $located = TEMPLATEPATH . '/' . $template_name;
+            break;
+        } elseif ( file_exists( $this_plugin_dir . '/templates/' . $template_name) ) {
+            $located =  $this_plugin_dir . '/templates/' . $template_name;
+            break;
+        }
+        mz_pr($this_plugin_dir . '/templates/' . $template_name);
+    }
+    if ( $load && $located != '' ) {
+        load_template( $located, $require_once );
+    }
+    return $located;
+}
+
 ?>

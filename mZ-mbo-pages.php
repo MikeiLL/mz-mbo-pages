@@ -304,13 +304,17 @@ function create_mz_event_cpt() {
 		// include the custom post type class
 		require_once(MZ_MBO_PAGES_DIR . 'lib/cpt.php');
 		// create a book custom post type
-		$yoga_events = new CPT('Yoga-Event');
+		$yoga_events = new CPT('yoga-event');
 		// create a genre taxonomy
-		$yoga_events->register_taxonomy('class');
+		$yoga_events->register_taxonomy('event-type');
 		// Set has'archive to true
 		$yoga_events->set('has_archive', True);
-		
+		// This may or may not be necessary and desired
 		$yoga_events->set('hierarchical', False);
+		// Someone says to do this for archive page reqrite to work
+		$yoga_events->set('rewrite', 'yoga-event');
+		// Match plugin text domain
+		$yoga_events->set_textdomain('mz-mbo-pages');
 		// define the columns to appear on the admin edit screen
 		$yoga_events->columns(array(
 				'cb' => '<input type="checkbox" />',
@@ -318,7 +322,7 @@ function create_mz_event_cpt() {
 				'teacher' => __('Teacher'),
 				'time' => __('Time'),
 				'level' => __('Level'),
-				'date' => __('Date')
+				'type' => __('Type')
 		));
 		
 		// Our text domain to match plugin
