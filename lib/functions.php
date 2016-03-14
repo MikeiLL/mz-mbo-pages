@@ -27,6 +27,7 @@ if ( ! function_exists( 'mz_pr' ) ) {
 	}
 }
 
+// BOF Add our own page template
 add_filter('archive_template', 'mbo_pages_yoga_event_template');
 
 function mbo_pages_yoga_event_template($template) {
@@ -43,7 +44,7 @@ function mbo_pages_locate_plugin_template($template_names, $load = false, $requi
         return '';
     }
     $located = '';  
-    $this_plugin_dir = MZ_MBO_PAGES_DIR ;
+    $this_plugin_dir = MZ_MBO_PAGES_DIR;
     foreach ( $template_names as $template_name ) {
         if ( !$template_name )
             continue;
@@ -57,12 +58,12 @@ function mbo_pages_locate_plugin_template($template_names, $load = false, $requi
             $located =  $this_plugin_dir . '/templates/' . $template_name;
             break;
         }
-        mz_pr($this_plugin_dir . '/templates/' . $template_name);
     }
     if ( $load && $located != '' ) {
         load_template( $located, $require_once );
     }
     return $located;
 }
+// EOF Add our own page template
 
 ?>
