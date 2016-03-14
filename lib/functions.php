@@ -28,6 +28,8 @@ if ( ! function_exists( 'mz_pr' ) ) {
 }
 
 // BOF Add our own page template
+// http://wordpress.stackexchange.com/questions/88371/how-do-you-create-an-archive-for-a-custom-post-type-from-a-plugin
+
 add_filter('archive_template', 'mbo_pages_yoga_event_template');
 
 function mbo_pages_yoga_event_template($template) {

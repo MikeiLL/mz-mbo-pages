@@ -86,7 +86,8 @@ class MZ_MBO_Pages_Pages {
 								add_post_meta( $post_id, 'teacher', $class->staffName );
 								add_post_meta( $post_id, 'time', $class->startTime );
 								add_post_meta( $post_id, 'type', $class->sessionTypeName );
-								add_post_meta( $post_id, 'level', $class->level );wp_update_post( $yoga_class );
+								add_post_meta( $post_id, 'level', $class->level );
+								wp_update_post( $yoga_class );
 								// Remove this item from the WPDB array
 								unset($all_yoga_classes[$key]);
 								// Remove this item from the MBO result collection
@@ -146,7 +147,6 @@ foreach ( get_post_types( '', 'names' ) as $post_type ) {
 		
 	//let's look at our CPT:	
 	$type_obj = get_post_type_object($type);
-	mz_pr($type_obj);
 
 	$my_query = null;
 	$my_query = new WP_Query($args);
@@ -182,14 +182,9 @@ foreach ( get_post_types( '', 'names' ) as $post_type ) {
 		foreach($mz_classes as $class)
 		{
 			
-			if ($class['Staff']['Name'] == 'Ashley Knight') {
-				//mz_pr($class['ClassScheduleID']);
-				//mz_pr(date_i18n('Y-m-d H:i:s', strtotime($class['StartDateTime'])));
-				//echo "<hr />";
-			}
 			$single_event = new Single_event($class, $daynum="", $hide=array(), $locations, $hide_cancelled=0,
 																		$advanced=0, $show_registrants=0, $registrants_count=0, 
-																		$calendar_format='events');
+																		$calendar_format='overview');
 																		
 			$identifier = $single_event->level . '_' 
 										. $single_event->sessionTypeName 

@@ -23,25 +23,35 @@ get_header(); ?>
 		<div id="content" class="site-content" role="main">
 		<?php if ( have_posts() ) : ?>
 			<header class="archive-header">
-				<h1 class="archive-title"><?php
-					if ( is_day() ) :
-						printf( __( 'Daily Archives: %s', 'twentythirteen' ), get_the_date() );
-					elseif ( is_month() ) :
-						printf( __( 'Monthly Archives: %s', 'twentythirteen' ), get_the_date( _x( 'F Y', 'monthly archives date format', 'twentythirteen' ) ) );
-					elseif ( is_year() ) :
-						printf( __( 'Yearly Archives: %s', 'twentythirteen' ), get_the_date( _x( 'Y', 'yearly archives date format', 'twentythirteen' ) ) );
-					else :
-						_e( 'Archives', 'twentythirteen' );
-					endif;
-				?></h1>
+				<h1 class="archive-title">An Overview of our Classes</h1>
 			</header><!-- .archive-header -->
-			$tbl = new HTML_Table();
+			<?php
+			$tbl = new HTML_Table('', 'mz_all_our_classes' . ' ' . ' mz-schedule-horizontal mz-schedule-display');
+			$tbl->addRow('header');
+			$tbl->addCell(__('Class Name', 'mz-mindbody-api'), 'mz_classDetails', 'header', array('scope'=>'header'));
+			$tbl->addCell(__('Instructor', 'mz-mindbody-api'), 'mz_staffName', 'header', array('scope'=>'header'));
+			$tbl->addCell(__('Class Type', 'mz-mindbody-api'), 'mz_sessionTypeName', 'header', array('scope'=>'header'));
+			$tbl->addCell(__('Level', 'mz-mindbody-api'), 'mz_sessionTypeName', 'header', array('scope'=>'header'));
+			$tbl->addTSection('tbody');
+			?>
 
 			<?php /* The loop */ ?>
 			<?php while ( have_posts() ) : the_post(); ?>
-				<?php the_field('level'); ?>
+					<?php
+					$link = new html_element('a');
+					$link->set('href', get_the_permalink());
+					// remove "with so and so from the title
+					$event_title_sans_instructor = explode(__("with", 'mz-mbo-pages'), get_the_title());
+					$link->set('text', $event_title_sans_instructor[0]);
+					$row_css_classes = 'mz_description_holder mz_schedule_table mz_location_';
+					$tbl->addRow($row_css_classes);
+					$tbl->addCell($link->build());
+					$tbl->addCell(get_field('teacher'));
+					$tbl->addCell(get_field('type'));
+					$tbl->addCell(get_field('level'));
+					?>
 			<?php endwhile; ?>
-
+			<?php echo $tbl->display() ?>
 			<?php twentythirteen_paging_nav(); ?>
 
 		<?php else : ?>
