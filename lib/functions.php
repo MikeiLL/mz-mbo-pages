@@ -67,5 +67,32 @@ function mbo_pages_locate_plugin_template($template_names, $load = false, $requi
     return $located;
 }
 // EOF Add our own page template
+// Include CPT in search results
+function search_filter($query) {
+  if ( !is_admin() && $query->is_main_query() ) {
+    if ($query->is_search) {
+      $query->set('post_type', array( 'post', 'yoga-event' ) );
+    }
+  }
+}
 
+add_action('pre_get_posts','search_filter');
+
+function list_all_yoga_events( $query ) {
+    if ( is_admin() || ! $query->is_main_query() )
+        return;
+
+    if ( is_home() ) {
+        // Display only 1 post for the original blog archive
+        $query->set( 'posts_per_page', -1 );
+        return;
+    }
+
+    if ( is_post_type_archive( 'yoga-event' ) ) {
+        // Display 50 posts for a custom post type called 'yoga-event'
+        $query->set( 'posts_per_page', -1 );
+        return;
+    }
+}
+add_action( 'pre_get_posts', 'list_all_yoga_events', 1 );
 ?>
