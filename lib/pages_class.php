@@ -165,9 +165,11 @@ foreach ( get_post_types( '', 'names' ) as $post_type ) {
 		<?php
 	
 		endwhile;
-		mz_pr(get_post_type_archive_link( 'yoga-event' ));
-BOF Output for debugging CPT */
+
   	} // list of yoga-event items
+  	mz_pr(get_post_type_archive_link( 'yoga-event' ));
+		EOF Output for debugging CPT 
+  	*/
   	
 	} // EOF mZ_mbo_pages_pages
 	
