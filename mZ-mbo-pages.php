@@ -270,20 +270,25 @@ function MZ_MBO_Pages_load_textdomain() {
 add_action( 'plugins_loaded', 'MZ_MBO_Pages_load_textdomain' );
 
 function mZ_mbo_pages_activation() {
-	wp_schedule_event(time(), 'every_three_minutes', 'mz_mbo_pages_event_hook');
+	wp_schedule_event( current_time( 'timestamp' ), 'every_three_minutes', 'mz_mbo_pages_fire_me_from_cron');
+}
+
+function mz_mbo_pages_fire_me_from_cron() {
+	require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
+	$pages_manager = new MZ_MBO_Pages_Pages();
+	$pages_manager->mZ_mbo_pages_pages();
+	mZ_write_to_file("i run!\n");
 }
 
 function mZ_mbo_pages_deactivation() {
-	wp_clear_scheduled_hook('mz_mbo_pages_event_hook');
+	wp_clear_scheduled_hook('mz_mbo_pages_fire_me_from_cron');
 }
 
 //register uninstaller
 register_uninstall_hook(__FILE__, 'mz-mbo-pages_uninstall');
 
 // register activation & deactivation adding custom action
-require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
-$pages_manager = new MZ_MBO_Pages_Pages();
-add_action('mz_mbo_pages_event_hook', array($pages_manager,'mZ_mbo_pages_pages'));
+	
 register_activation_hook(__FILE__, 'mZ_mbo_pages_activation');
 register_deactivation_hook(__FILE__, 'mZ_mbo_pages_deactivation');
 

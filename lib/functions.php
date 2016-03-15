@@ -104,15 +104,32 @@ function list_all_yoga_events( $query ) {
 }
 add_action( 'pre_get_posts', 'list_all_yoga_events', 1 );
 
-// Frequent Cron for testing
-function isa_add_every_three_minutes( $schedules ) {
- 
-    $schedules['every_three_minutes'] = array(
+//BOF Cron Jobs
+
+function add_new_intervals($schedules) 
+{
+	// add weekly and monthly intervals
+	$schedules['weekly'] = array(
+		'interval' => 604800,
+		'display' => __('Once Weekly')
+	);
+	
+	$schedules['twoweeks'] = array(
+		'interval' => 1209600,
+		'display' => __('Every Two Weeks')
+	);
+
+	$schedules['monthly'] = array(
+		'interval' => 2635200,
+		'display' => __('Once a month')
+	);
+	
+	$schedules['every_three_minutes'] = array(
             'interval'  => 180,
-            'display'   => __( 'Every 3 Minutes', 'textdomain' )
+            'display'   => __( 'Every 3 Minutes', 'mz-mbo-pages' )
     );
-     
-    return $schedules;
+
+	return $schedules;
 }
-add_filter( 'cron_schedules', 'isa_add_every_three_minutes' );
+add_filter( 'cron_schedules', 'add_new_intervals');
 ?>
