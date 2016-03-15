@@ -73,7 +73,7 @@ class MZ_MBO_Pages_Admin {
         
     public function load_pages() {
         require_once MZ_MBO_PAGES_DIR .'lib/functions.php';
-        require_once MZ_MBO_PAGES_DIR .'inc/list_classes.php';
+        require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
         }
 }
 
@@ -248,10 +248,11 @@ class MZ_MBO_Pages {
 		}
 		
  		private function add_shortcodes() {
+        // require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
  	
- 				$mz_mbo_pages = new MZ_MBO_Pages_Pages();
+ 				// $mz_mbo_pages = new MZ_MBO_Pages_Pages();
  		
-        add_shortcode('mz-mbo-list-classes', array($mz_mbo_pages, 'mZ_mbo_pages_pages'));
+       // add_shortcode('mz-mbo-list-classes', array($mz_mbo_pages, 'mZ_mbo_pages_pages'));
 
     }
  
@@ -272,17 +273,24 @@ function MZ_MBO_Pages_load_textdomain() {
 add_action( 'plugins_loaded', 'MZ_MBO_Pages_load_textdomain' );
 
 function mZ_mbo_pages_activation() {
+	require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
 	$pages_manager = new MZ_MBO_Pages_Pages();
+	$pages_manager->mZ_mbo_pages_pages();
 	wp_schedule_event(time(), 'every_three_minutes', array($pages_manager,'mZ_mbo_pages_pages'));
 }
 
 function mZ_mbo_pages_deactivation() {
+	require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
 	$pages_manager = new MZ_MBO_Pages_Pages();
 	wp_clear_scheduled_hook(array($pages_manager,'mZ_mbo_pages_pages'));
 }
 
 //register uninstaller
 register_uninstall_hook(__FILE__, 'mz-mbo-pages_uninstall');
+
+// register activation & deactivation
+register_activation_hook(__FILE__, 'mZ_mbo_pages_activation');
+register_deactivation_hook(__FILE__, 'mZ_mbo_pages_deactivation');
 
 function mZ_mbo_pages_uninstall(){
 	//actions to perform once on plugin uninstall go here

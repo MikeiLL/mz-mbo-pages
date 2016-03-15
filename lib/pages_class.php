@@ -7,6 +7,7 @@ class MZ_MBO_Pages_Pages {
 	
 	public function __construct(){
 		require_once(WP_PLUGIN_DIR . '/mz-mindbody-api/' . 'inc/mz_mbo_init.inc');
+		require_once(WP_PLUGIN_DIR . '/mz-mindbody-api/' . 'lib/schedule_objects.php');
 		$this->mz_mbo_globals = new MZ_Mindbody_Init();
 	}
 
@@ -136,6 +137,8 @@ class MZ_MBO_Pages_Pages {
 		//List Post Types
 		mZ_write_to_file('it is now: ' . time());
 
+/* BOF Output for debugging CPT
+
 foreach ( get_post_types( '', 'names' ) as $post_type ) {
    echo '<p>' . $post_type . '</p>';
 }
@@ -162,8 +165,10 @@ foreach ( get_post_types( '', 'names' ) as $post_type ) {
 		<?php
 	
 		endwhile;
+		mz_pr(get_post_type_archive_link( 'yoga-event' ));
+BOF Output for debugging CPT */
   	} // list of yoga-event items
-  	mz_pr(get_post_type_archive_link( 'yoga-event' ));
+  	
 	} // EOF mZ_mbo_pages_pages
 	
 	public function makeNumericArray($data) {
