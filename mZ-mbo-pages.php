@@ -273,7 +273,7 @@ add_action( 'plugins_loaded', 'MZ_MBO_Pages_load_textdomain' );
 
 function mZ_mbo_pages_activation() {
 	$pages_manager = new MZ_MBO_Pages_Pages();
-	wp_schedule_event(time(), 'hourly', array($pages_manager,'mZ_mbo_pages_pages'));
+	wp_schedule_event(time(), 'every_three_minutes', array($pages_manager,'mZ_mbo_pages_pages'));
 }
 
 function mZ_mbo_pages_deactivation() {

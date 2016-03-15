@@ -122,7 +122,7 @@ function search_filter($query) {
 
 add_action('pre_get_posts','search_filter');
 
-// Everride posts count result for yoga-events
+// Override posts count result for yoga-events
 function list_all_yoga_events( $query ) {
     if ( is_admin() || ! $query->is_main_query() )
         return;
@@ -144,4 +144,16 @@ function list_all_yoga_events( $query ) {
     }
 }
 add_action( 'pre_get_posts', 'list_all_yoga_events', 1 );
+
+// Frequent Cron for testing
+function isa_add_every_three_minutes( $schedules ) {
+ 
+    $schedules['every_three_minutes'] = array(
+            'interval'  => 180,
+            'display'   => __( 'Every 3 Minutes', 'textdomain' )
+    );
+     
+    return $schedules;
+}
+add_filter( 'cron_schedules', 'isa_add_every_three_minutes' );
 ?>
