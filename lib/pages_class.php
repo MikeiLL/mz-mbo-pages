@@ -49,7 +49,7 @@ class MZ_MBO_Pages_Pages {
 			}
 			//echo $mb->debug();
 
-			//Cache the mindbody call for 24 hour2
+			//Cache the mindbody call for one week
 			// TODO make cache timeout configurable.
 			set_transient($mz_list_classes_cache, $mz_all_class_data, 7 * 60 * 60 * 24);
 		} // End if transient not set
@@ -135,7 +135,7 @@ class MZ_MBO_Pages_Pages {
 				
 		}//EO90F if Not Empty Classes
 		//List Post Types
-		mZ_write_to_file('it is now: ' . time());
+		mZ_write_to_file('Updated pages at: ' . time());
 
 /* BOF Output for debugging CPT
 

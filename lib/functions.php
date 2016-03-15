@@ -114,7 +114,7 @@ function add_new_intervals($schedules)
 		'display' => __('Once Weekly')
 	);
 	
-	$schedules['twoweeks'] = array(
+	$schedules['semiweekly'] = array(
 		'interval' => 1209600,
 		'display' => __('Every Two Weeks')
 	);

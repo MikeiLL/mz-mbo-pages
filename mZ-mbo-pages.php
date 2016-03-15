@@ -269,47 +269,43 @@ function MZ_MBO_Pages_load_textdomain() {
 	
 add_action( 'plugins_loaded', 'MZ_MBO_Pages_load_textdomain' );
 
-function mZ_mbo_pages_activation() {
-	wp_schedule_event( current_time( 'timestamp' ), 'every_three_minutes', 'mz_mbo_pages_fire_me_from_cron');
-}
+// Cron Job to pull in class overview data semi-weekly.
+// Need following when using custom times
+// require_once MZ_MBO_PAGES_DIR .'lib/functions.php';
 
-function mz_mbo_pages_fire_me_from_cron() {
-	require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
+register_activation_hook(__FILE__, 'mZ_mbo_pages_activation');
+
+// Need this file for class method
+require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
+$pages_manager = new MZ_MBO_Pages_Pages();
+add_action('make_pages_twice_monthly', array($pages_manager, 'mZ_mbo_pages_pages'));
+
+function mZ_mbo_pages_activation() {
+	wp_schedule_event( current_time( 'timestamp' ), 'weekly', 'make_pages_weekly');
+	// Run this once upon activation to populate class overview CPT elements
 	$pages_manager = new MZ_MBO_Pages_Pages();
 	$pages_manager->mZ_mbo_pages_pages();
-	mZ_write_to_file("i run!\n");
 }
 
+// register deactivation to clear cache
+	
+register_deactivation_hook(__FILE__, 'mZ_mbo_pages_deactivation');
+
 function mZ_mbo_pages_deactivation() {
-	wp_clear_scheduled_hook('mz_mbo_pages_fire_me_from_cron');
+	wp_clear_scheduled_hook('make_pages_weekly');
 }
 
 //register uninstaller
 register_uninstall_hook(__FILE__, 'mz-mbo-pages_uninstall');
 
-// register activation & deactivation adding custom action
-	
-register_activation_hook(__FILE__, 'mZ_mbo_pages_activation');
-register_deactivation_hook(__FILE__, 'mZ_mbo_pages_deactivation');
 
 function mZ_mbo_pages_uninstall(){
 	//actions to perform once on plugin uninstall go here
 	delete_option('mz_mbo_pages_options');
 }
 
-if (!function_exists( 'mZ_latest_jquery' )){
-	function mZ_latest_jquery(){
-		//	Use latest jQuery release
-		if( !is_admin() ){
-			wp_deregister_script('jquery');
-			wp_register_script('jquery', ("http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"), false, '');
-			wp_enqueue_script('jquery');
-		}
-	}
-	add_action('wp_enqueue_scripts', 'mZ_latest_jquery');
-}
-
-//BOF create yoga-event CPT
+// BOF create yoga-event CPT
+// TODO can we move this to functions.php file?
 function create_mz_event_cpt() {
 	
 		// include the custom post type class
