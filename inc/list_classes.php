@@ -131,9 +131,11 @@ class MZ_MBO_Pages_Pages {
 						add_post_meta( $post_id, 'type', $class->sessionTypeName );
 						add_post_meta( $post_id, 'level', $class->level );
 			} // foreach($mz_sorted
-					
-		}//EOF if Not Empty Classes
+				
+		}//EO90F if Not Empty Classes
 		//List Post Types
+		mZ_write_to_file('it is now: ' . time());
+
 foreach ( get_post_types( '', 'names' ) as $post_type ) {
    echo '<p>' . $post_type . '</p>';
 }

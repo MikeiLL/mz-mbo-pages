@@ -272,11 +272,13 @@ function MZ_MBO_Pages_load_textdomain() {
 add_action( 'plugins_loaded', 'MZ_MBO_Pages_load_textdomain' );
 
 function mZ_mbo_pages_activation() {
-	//Don't know if there's anything we need to do here.
+	$pages_manager = new MZ_MBO_Pages_Pages();
+	wp_schedule_event(time(), 'hourly', array($pages_manager,'mZ_mbo_pages_pages'));
 }
 
 function mZ_mbo_pages_deactivation() {
-	//Don't know if there's anything we need to do here.
+	$pages_manager = new MZ_MBO_Pages_Pages();
+	wp_clear_scheduled_hook(array($pages_manager,'mZ_mbo_pages_pages'));
 }
 
 //register uninstaller
