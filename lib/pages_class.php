@@ -27,7 +27,7 @@ class MZ_MBO_Pages_Pages {
     
     // START caching configuration
 		$mz_list_classes_cache = "mz_list_classes_cache";
-
+		
 		$mz_cache_reset = isset($this->mz_mbo_globals->options['mz_mindbody_clear_cache']) ? "on" : "off";
 
 		if ( $mz_cache_reset == "on" )
@@ -54,7 +54,6 @@ class MZ_MBO_Pages_Pages {
 			set_transient($mz_list_classes_cache, $mz_all_class_data, 7 * 60 * 60 * 24);
 		} // End if transient not set
 		// END caching configuration
-		
 
 		if(!empty($mz_all_class_data['GetClassesResult']['Classes']['Class']))
 		{
@@ -68,8 +67,9 @@ class MZ_MBO_Pages_Pages {
 			);
 			
 			$all_yoga_classes = get_posts( $args );
-
-			if (is_array($all_yoga_classes)) {
+			
+			if (is_array($all_yoga_classes) && count($all_yoga_classes) >= 1) {
+				// If there are already yoga-event posts, filter and update
 				foreach ($all_yoga_classes as $key => $post) {
 					// Compare each item returned from WPDB to MBO results
 					foreach($mz_sorted as $unique => $class) {  
@@ -96,15 +96,15 @@ class MZ_MBO_Pages_Pages {
 							endif;
 						}
 				 }
-			}
+			} 
 			
-			if (is_array($all_yoga_classes)) {
+			if (is_array($all_yoga_classes) && count($all_yoga_classes) >= 1) {
 				foreach ($all_yoga_classes as $key => $post) {
 					// Now we'll clear out the rest of the WPDB CPT items
 					wp_delete_post( $post->ID, true);
 				}
 			}
-							 
+
 			foreach($mz_sorted as $unique => $class) { 
 				// Create new CPT items for the rest of results from MBO not filtered by above update  
 					// Define Content:
@@ -116,7 +116,7 @@ class MZ_MBO_Pages_Pages {
 						
 					// Create post object
 						$yoga_class = array(
-							'post_title'    => wp_strip_all_tags( $class->className . ' ' . html_entity_decode($class->teacher) ),
+							'post_title'    => wp_strip_all_tags( utf8_encode($class->className) . ' ' . utf8_encode($class->teacher) ),
 							'post_content'  => $page_body,
 							'post_status'   => 'publish',
 							'post_type' => 'yoga-event',
@@ -152,22 +152,25 @@ foreach ( get_post_types( '', 'names' ) as $post_type ) {
 		
 	//let's look at our CPT:	
 	$type_obj = get_post_type_object($type);
-
-	$my_query = null;
-	$my_query = new WP_Query($args);
-	if( $my_query->have_posts() ) {
-		while ($my_query->have_posts()) : 
-		$my_query->the_post(); 
-		?>
+*/
+	if ( is_singular( 'post' ) && in_the_loop() ) {
+		$my_query = null;
+		$my_query = new WP_Query($args);
+		if( $my_query->have_posts() ) {
+			while ($my_query->have_posts()) : 
+			$my_query->the_post(); 
+			?>
 	
-			<p><a href="<?php the_permalink() ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>"><?php the_title(); ?> </a></p>
+				<p><a href="<?php the_permalink() ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>"><?php the_title(); ?> </a></p>
 		
-		<?php
+			<?php
 	
-		endwhile;
+			endwhile;
 
-  	} // list of yoga-event items
-  	mz_pr(get_post_type_archive_link( 'yoga-event' ));
+			} // list of yoga-event items
+  	//mz_pr(get_post_type_archive_link( 'yoga-event' ));
+  	}
+  	/*
 		EOF Output for debugging CPT 
   	*/
   	

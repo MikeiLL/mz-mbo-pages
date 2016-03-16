@@ -281,8 +281,12 @@ $pages_manager = new MZ_MBO_Pages_Pages();
 add_action('make_pages_weekly', array($pages_manager, 'mZ_mbo_pages_pages'));
 
 function mZ_mbo_pages_activation() {
-	wp_schedule_event( current_time( 'timestamp' ), 'weekly', 'make_pages_weekly');
+	wp_schedule_event( current_time( 'timestamp' ), 'every_three_minutes', 'make_pages_weekly');
 	// Run this once upon activation to populate class overview CPT elements
+	// Need this file for class method
+	// Is MZ_MBO_PAGES_DIR not yet declared?
+	//require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
+	require_once(WP_PLUGIN_DIR . '/mz-mbo-pages/lib/pages_class.php');
 	$pages_manager = new MZ_MBO_Pages_Pages();
 	$pages_manager->mZ_mbo_pages_pages();
 }
