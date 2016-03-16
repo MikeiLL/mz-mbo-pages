@@ -271,14 +271,14 @@ add_action( 'plugins_loaded', 'MZ_MBO_Pages_load_textdomain' );
 
 // Cron Job to pull in class overview data semi-weekly.
 // Need following when using custom times
-// require_once MZ_MBO_PAGES_DIR .'lib/functions.php';
+require_once MZ_MBO_PAGES_DIR .'lib/functions.php';
 
 register_activation_hook(__FILE__, 'mZ_mbo_pages_activation');
 
 // Need this file for class method
 require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
 $pages_manager = new MZ_MBO_Pages_Pages();
-add_action('make_pages_twice_monthly', array($pages_manager, 'mZ_mbo_pages_pages'));
+add_action('make_pages_weekly', array($pages_manager, 'mZ_mbo_pages_pages'));
 
 function mZ_mbo_pages_activation() {
 	wp_schedule_event( current_time( 'timestamp' ), 'weekly', 'make_pages_weekly');
