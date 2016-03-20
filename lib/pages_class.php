@@ -8,6 +8,7 @@ class MZ_MBO_Pages_Pages {
 	public function __construct(){
 		require_once(WP_PLUGIN_DIR . '/mz-mindbody-api/' . 'inc/mz_mbo_init.inc');
 		require_once(WP_PLUGIN_DIR . '/mz-mindbody-api/' . 'lib/schedule_objects.php');
+		require_once(WP_PLUGIN_DIR . '/mz-mindbody-api/' . 'lib/html_table.class.php');
 		$this->mz_mbo_globals = new MZ_Mindbody_Init();
 	}
 
@@ -215,8 +216,8 @@ foreach ( get_post_types( '', 'names' ) as $post_type ) {
 			if(empty($all_classes[$identifier])) {
 				$all_classes[$identifier] = $single_event;
 				} else {
-				$non_specific_class_time = date_i18n('l H:i a', strtotime($class['StartDateTime']));
-				if(!in_array($non_specific_class_time, $all_classes[$identifier]->non_specified_class_times))
+				$non_specific_class_time = date_i18n('l g:i a', strtotime($class['StartDateTime']));
+				if(is_array($all_classes[$identifier]->non_specified_class_times) && !in_array($non_specific_class_time, $all_classes[$identifier]->non_specified_class_times))
 					array_push($all_classes[$identifier]->non_specified_class_times, $non_specific_class_time);
 				}
 		}
