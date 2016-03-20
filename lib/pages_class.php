@@ -73,7 +73,7 @@ class MZ_MBO_Pages_Pages {
 				foreach ($all_yoga_classes as $key => $post) {
 					// Compare each item returned from WPDB to MBO results
 					foreach($mz_sorted as $unique => $class) {  
-						// Define Content to update (only the description:
+						// Define Content to update (only) the description:
 							$page_body = $class->class_details;
 							$my_mbo_title = wp_strip_all_tags( $class->className . ' ' . html_entity_decode($class->teacher));
 							if ($post->post_title == $my_mbo_title) :
@@ -113,7 +113,14 @@ class MZ_MBO_Pages_Pages {
 						$level = $class->level;
 						$staffName = $class->teacher;
 						$page_body = $class->class_details;
-						
+						$schedule_day_times = new HTML_Table('schedule_listing');
+						$schedule_day_times->addRow('header');
+						$schedule_day_times->addCell('');
+						foreach($class->non_specified_class_times as $class_time) {
+							$schedule_day_times->addRow();
+							$schedule_day_times->addCell($class_time);
+						}
+						$page_body .= $schedule_day_times->display();
 					// Create post object
 						$yoga_class = array(
 							'post_title'    => wp_strip_all_tags( utf8_encode($class->className) . ' ' . utf8_encode($class->teacher) ),
@@ -207,7 +214,11 @@ foreach ( get_post_types( '', 'names' ) as $post_type ) {
 
 			if(empty($all_classes[$identifier])) {
 				$all_classes[$identifier] = $single_event;
-				} 
+				} else {
+				$non_specific_class_time = date_i18n('l H:i a', strtotime($class['StartDateTime']));
+				if(!in_array($non_specific_class_time, $all_classes[$identifier]->non_specified_class_times))
+					array_push($all_classes[$identifier]->non_specified_class_times, $non_specific_class_time);
+				}
 		}
 		ksort($all_classes);
 		
