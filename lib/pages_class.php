@@ -108,6 +108,8 @@ class MZ_MBO_Pages_Pages {
 
 			foreach($mz_sorted as $unique => $class) { 
 				// Create new CPT items for the rest of results from MBO not filtered by above update  
+					// TODO Remove this which is URU specific
+						if ($class->className == 'Admin') {continue;}
 					// Define Content:
 						$classimage = isset($class->classImage) ? $class->classImage : '';
 						$staffImage = isset($class->staffImage) ? $class->staffImage : '';
