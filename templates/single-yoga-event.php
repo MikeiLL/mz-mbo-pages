@@ -8,7 +8,45 @@
  */
 
 get_header(); ?>
+<?php
 
+function mz_pages_post_nav($tp)
+{
+	$wp2 = array();
+	$i=0;
+	$pOrder = array(
+			'post_type'         =>	'yoga-event',
+			'orderby'		=>	'title',
+			'order'			=>	'ASC',
+			'nopaging'		=>	true,
+			'posts_count'	=>	5
+				);
+	$workPosts = get_posts($pOrder);
+	foreach($workPosts as $wpost)
+	{
+		$pid = $wpost->ID;
+		$wp2[$i] = $pid;
+		$i++;
+	}
+	$pnum = array_search($tp,$wp2);
+
+	if($pnum-1 >= 0)
+	{
+		$pre = '<a href="'.get_permalink($wp2[$pnum-1]).'" title="'.get_the_title($wp2[$pnum-1]).'" rel="prev"><span class="meta-nav">&larr;</span> '.get_the_title($wp2[$pnum-1]).'</a>';
+	}
+	if($pnum+1 < count($wp2))
+	{
+		$nxt = '<a href="'.get_permalink($wp2[$pnum+1]).'" title="'.get_the_title($wp2[$pnum+1]).'" rel="next">'.get_the_title($wp2[$pnum+1]).' <span class="meta-nav">&rarr;</span></a>';
+	}
+	?>
+		<nav class="navigation post-navigation" role="navigation">
+			<h1 class="screen-reader-text"><?php _e( 'Post navigation', 'twentythirteen' ); ?></h1>
+			<div class="nav-links">
+		<?php echo $pre . $nxt; ?>
+			</div><!-- .nav-links -->
+		</nav><!-- .navigation -->
+	<?php } ?>
+	
 	<div id="primary" class="content-area">
 		<div id="content" class="site-content" role="main">
 
@@ -24,8 +62,8 @@ get_header(); ?>
 				<?php add_filter( 'the_content', 'mz_mbo_pages_add_to_content', 50 ); ?>
 				<?php $content = get_template_part( 'content', get_post_format() ) ?>
 				
-				<?php if( is_singular('yoga-event') ) : ?>
-				<?php 
+				<?php if( is_singular('yoga-event') ) : 
+					mz_pages_post_nav(get_the_ID());
 				else:
 					twentythirteen_post_nav(); 
 				endif;

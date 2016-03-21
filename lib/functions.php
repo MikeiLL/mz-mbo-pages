@@ -1,33 +1,4 @@
 <?php
-//For Testing
-if ( ! function_exists( 'mZ_write_to_file' ) ) {
-	function mZ_write_to_file($message, $file_path='')
-	{
-			$file_path = ( ($file_path == '') || !file_exists($file_path) ) ? WP_CONTENT_DIR . '/mbo_debug_log.txt' : $file_path;
-			$header = date('l dS \o\f F Y h:i:s A', strtotime("now")) . " \nMessage:\t ";
-
-			if (is_array($message)) {
-					$header = "\nMessage is array.\n";
-					$message = print_r($message, true);
-			}
-			$message .= "\n";
-			file_put_contents(
-					$file_path, 
-					$header . $message, 
-					FILE_APPEND | LOCK_EX
-			);
-	}
-}
-//Format arrays for display in development
-if ( ! function_exists( 'mz_pr' ) ) {
-	function mz_pr($message) {
-		echo "<pre>";
-		print_r($message);
-		echo "</pre>";
-	}
-}
-
-
  
 // BOF Add our own templates
 // http://wordpress.stackexchange.com/questions/88371/how-do-you-create-an-archive-for-a-custom-post-type-from-a-plugin
@@ -80,6 +51,7 @@ if ($post->post_type == "yoga-event"){
         $templates[] = 'single-yoga-event.php';
         $template = mbo_pages_locate_plugin_template($templates);
     }
+    else { return mbo_pages_locate_plugin_template(array('single.php')); }
     return $template;
 }
 // EOF Add our own templates
@@ -146,4 +118,7 @@ function add_new_intervals($schedules)
 	return $schedules;
 }
 add_filter( 'cron_schedules', 'add_new_intervals');
+
+
+
 ?>

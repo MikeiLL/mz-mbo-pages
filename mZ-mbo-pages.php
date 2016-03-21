@@ -15,7 +15,7 @@
  * Plugin URI: 		http://www.mzoo.org/
  * License:         GPL-2.0+
  * License URI:     http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain: 	mz-mbo-pages
+ * Text Domain: 	mz-mindbody-api
  * Domain Path: 	/languages
 */
 
@@ -264,7 +264,7 @@ class MZ_MBO_Pages {
 }
 
 function MZ_MBO_Pages_load_textdomain() {
-		load_plugin_textdomain('mz-mbo-pages',false,dirname(plugin_basename(__FILE__)) . '/languages');
+		load_plugin_textdomain('mz-mindbody-api',false,dirname(plugin_basename(__FILE__)) . '/languages');
 	}
 	
 add_action( 'plugins_loaded', 'MZ_MBO_Pages_load_textdomain' );
