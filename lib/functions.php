@@ -50,8 +50,13 @@ function mbo_pages_single_event_template($single) {
 if ($post->post_type == "yoga-event"){
         $templates[] = 'single-yoga-event.php';
         $template = mbo_pages_locate_plugin_template($templates);
+    } else if ($post->post_type != 'post') {
+        $templates[] = 'single' . str_replace(' ', '-', $post->post_type) . '.php';
+        $template = mbo_pages_locate_plugin_template($templates);
+    } else {
+        $templates[] = 'single.php';
+        $template = mbo_pages_locate_plugin_template($templates);
     }
-    else { return mbo_pages_locate_plugin_template(array('single.php')); }
     return $template;
 }
 // EOF Add our own templates
