@@ -76,7 +76,7 @@ class MZ_MBO_Pages_Pages {
 					foreach($mz_sorted as $unique => $class) {  
 						// Define Content to update (only) the description:
 							$page_body = $class->class_details;
-							$my_mbo_title = wp_strip_all_tags( $class->className . ' ' . html_entity_decode($class->teacher));
+							$my_mbo_title = wp_strip_all_tags( $class->className . ' ' . utf8_encode($class->teacher));
 							if ($post->post_title == $my_mbo_title) :
 								$yoga_class = array(
 									'ID' => $post->ID,
@@ -131,10 +131,9 @@ class MZ_MBO_Pages_Pages {
 							'post_author'   => 1,
 							'comment_status' => 'closed'
 						);
- 
+						mz_pr($yoga_class);
 						// Insert the post into the database
 						$post_id = wp_insert_post( $yoga_class );
-						add_post_meta( $post_id, 'title', $class->className );
 						add_post_meta( $post_id, 'teacher', $class->staffName );
 						add_post_meta( $post_id, 'time', $class->startTime );
 						add_post_meta( $post_id, 'type', $class->sessionTypeName );
@@ -143,45 +142,8 @@ class MZ_MBO_Pages_Pages {
 				
 		}//EO90F if Not Empty Classes
 		//List Post Types
-		mZ_write_to_file('Updated pages at: ' . time());
+		//mZ_write_to_file('Updated pages at: ' . time());
 
-/* BOF Output for debugging CPT
-
-foreach ( get_post_types( '', 'names' ) as $post_type ) {
-   echo '<p>' . $post_type . '</p>';
-}
-
-	$type = 'yoga-event';
-	$args=array(
-		'post_type' => $type,
-		'post_status' => 'publish',
-		'posts_per_page' => -1,
-		'ignore_sticky_posts'=> 1);
-		
-	//let's look at our CPT:	
-	$type_obj = get_post_type_object($type);
-*/
-	if ( is_singular( 'post' ) && in_the_loop() ) {
-		$my_query = null;
-		$my_query = new WP_Query($args);
-		if( $my_query->have_posts() ) {
-			while ($my_query->have_posts()) : 
-			$my_query->the_post(); 
-			?>
-	
-				<p><a href="<?php the_permalink() ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>"><?php the_title(); ?> </a></p>
-		
-			<?php
-	
-			endwhile;
-
-			} // list of yoga-event items
-  	//mz_pr(get_post_type_archive_link( 'yoga-event' ));
-  	}
-  	/*
-		EOF Output for debugging CPT 
-  	*/
-  	
 	} // EOF mZ_mbo_pages_pages
 	
 	public function makeNumericArray($data) {
@@ -216,7 +178,9 @@ foreach ( get_post_types( '', 'names' ) as $post_type ) {
 			if(empty($all_classes[$identifier])) {
 				$all_classes[$identifier] = $single_event;
 				} else {
-				$non_specific_class_time = date_i18n('l g:i a', strtotime($class['StartDateTime']));
+				$non_specific_class_time = date_i18n('l g:i a', strtotime($class['StartDateTime'])) . ' - ' .
+																	 date_i18n('g:i a', strtotime($class['EndDateTime'])) . '&nbsp;' .
+																	 '<span class="schedule_location">(' . $class['Location']['Name'] . ')</span>';
 				if(is_array($all_classes[$identifier]->non_specified_class_times) && !in_array($non_specific_class_time, $all_classes[$identifier]->non_specified_class_times))
 					array_push($all_classes[$identifier]->non_specified_class_times, $non_specific_class_time);
 				}
