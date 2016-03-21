@@ -14,10 +14,15 @@ get_header(); ?>
 
 			<?php /* The loop */ ?>
 			<?php while ( have_posts() ) : the_post(); ?>
-
-				<?php get_template_part( 'content', get_post_format() ); ?>
-				
-				<p>Visit the schedule page for more info and to register for the class.</p>
+			
+				<?php
+				function mz_mbo_pages_add_to_content ($content) {
+					$content .= '<h4>Visit the schedule page for more info and to register for classes.</h4>';
+					return $content;
+				}
+				?>
+				<?php add_filter( 'the_content', 'mz_mbo_pages_add_to_content', 50 ); ?>
+				<?php $content = get_template_part( 'content', get_post_format() ) ?>
 				
 				<?php if( is_singular('yoga-event') ) : ?>
 				<?php 

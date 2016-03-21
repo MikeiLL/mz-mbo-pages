@@ -29,12 +29,13 @@ if ( ! function_exists( 'mz_pr' ) ) {
 
 
  
-// BOF Add our own page template
+// BOF Add our own templates
 // http://wordpress.stackexchange.com/questions/88371/how-do-you-create-an-archive-for-a-custom-post-type-from-a-plugin
 
-add_filter('archive_template', 'mbo_pages_yoga_event_template');
+add_filter('archive_template', 'mbo_pages_yoga_event_archive_template');
+add_filter('single_template', 'mbo_pages_single_event_template');
 
-function mbo_pages_yoga_event_template($template) {
+function mbo_pages_yoga_event_archive_template($template) {
     global $wp_query;
     if (is_post_type_archive('yoga-event')) {
         $templates[] = 'archive-yoga-event.php';
@@ -68,7 +69,20 @@ function mbo_pages_locate_plugin_template($template_names, $load = false, $requi
     }
     return $located;
 }
-// EOF Add our own page template
+
+/* Filter the single_template with our custom function*/
+
+function mbo_pages_single_event_template($single) {
+    global $wp_query, $post;
+
+/* Checks for single template by post type */
+if ($post->post_type == "yoga-event"){
+        $templates[] = 'single-yoga-event.php';
+        $template = mbo_pages_locate_plugin_template($templates);
+    }
+    return $template;
+}
+// EOF Add our own templates
 
 // Include CPT in search results
 function search_filter($query) {

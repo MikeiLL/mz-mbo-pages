@@ -52,7 +52,7 @@ get_header(); ?>
 					?>
 			<?php endwhile; ?>
 			<?php echo $tbl->display() ?>
-			<p>Visit the schedule page for more info and to register for the class.</p>
+			
 			<?php twentythirteen_paging_nav(); ?>
 
 		<?php else : ?>
