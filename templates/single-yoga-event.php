@@ -29,7 +29,11 @@ function mz_pages_post_nav($tp)
 		$i++;
 	}
 	$pnum = array_search($tp,$wp2);
-
+	
+	//initialize in case empty
+	$pre = '';
+	$nxt = '';
+	
 	if($pnum-1 >= 0)
 	{
 		$pre = '<a href="'.get_permalink($wp2[$pnum-1]).'" title="'.get_the_title($wp2[$pnum-1]).'" rel="prev"><span class="meta-nav">&larr;</span> '.get_the_title($wp2[$pnum-1]).'</a>';
@@ -89,5 +93,5 @@ function mz_pages_post_nav($tp)
 		</div><!-- #content -->
 	</div><!-- #primary -->
 
-<?php get_sidebar(); ?>
+<?php //get_sidebar(); ?>
 <?php get_footer(); ?>

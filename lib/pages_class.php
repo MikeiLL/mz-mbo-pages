@@ -76,6 +76,14 @@ class MZ_MBO_Pages_Pages {
 					foreach($mz_sorted as $unique => $class) {  
 						// Define Content to update (only) the description:
 							$page_body = $class->class_details;
+							$schedule_day_times = new HTML_Table('schedule_listing');
+							$schedule_day_times->addRow('header');
+							$schedule_day_times->addCell('');
+							foreach($class->non_specified_class_times as $class_time) {
+								$schedule_day_times->addRow();
+								$schedule_day_times->addCell($class_time);
+							}
+							$page_body .= $schedule_day_times->display();
 							$my_mbo_title = wp_strip_all_tags( $class->className . ' ' . utf8_encode($class->teacher));
 							if ($post->post_title == $my_mbo_title) :
 								$yoga_class = array(
