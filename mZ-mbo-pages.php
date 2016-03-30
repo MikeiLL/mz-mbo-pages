@@ -8,7 +8,7 @@
  *
  * @wordpress-plugin
  * Plugin Name: 	mZoo MBO Pages
- * Description: Create yoga-event CPT and populate from MBO results for overview of classes per 2 week period.
+ * Description: Create class CPT and populate from MBO results for overview of classes per 2 week period.
  * Version: 		1.0.0
  * Author: 			mZoo.org
  * Author URI: 		http://www.mZoo.org/
@@ -281,7 +281,7 @@ $pages_manager = new MZ_MBO_Pages_Pages();
 add_action('make_pages_weekly', array($pages_manager, 'mZ_mbo_pages_pages'));
 
 function mZ_mbo_pages_activation() {
-	wp_schedule_event( current_time( 'timestamp' ), 'every_three_minutes', 'make_pages_weekly');
+	wp_schedule_event( current_time( 'timestamp' ), 'weekly', 'make_pages_weekly');
 	// Run this once upon activation to populate class overview CPT elements
 	// Need this file for class method
 	// Is MZ_MBO_PAGES_DIR not yet declared?
@@ -308,26 +308,29 @@ function mZ_mbo_pages_uninstall(){
 	delete_option('mz_mbo_pages_options');
 }
 
-// BOF create yoga-event CPT
+// BOF create class Classes
 // TODO can we move this to functions.php file?
-function create_mz_event_cpt() {
+function create_mz_classes_cpt() {
 	
 		// include the custom post type class
 		require_once(MZ_MBO_PAGES_DIR . 'lib/cpt.php');
 		// create a book custom post type
-		$yoga_events = new CPT('yoga-event');
+		$classes = new CPT('classes');
 		// create a genre taxonomy
-		$yoga_events->register_taxonomy('event-type');
+		$classes->register_taxonomy('event-type');
 		// Set has'archive to true
-		$yoga_events->set('has_archive', True);
+		$classes->set('has_archive', True);
+		// Set singular and plural names
+		$classes->singular = 'Class';
+		$classes->plural = 'Classes';
 		// This may or may not be necessary and desired
-		$yoga_events->set('hierarchical', False);
+		$classes->set('hierarchical', False);
 		// Someone says to do this for archive page reqrite to work
-		$yoga_events->set('rewrite', 'yoga-event');
+		$classes->set('rewrite', 'classes');
 		// Match plugin text domain
-		$yoga_events->set_textdomain('mz-mbo-pages');
+		$classes->set_textdomain('mz-mbo-pages');
 		// define the columns to appear on the admin edit screen
-		$yoga_events->columns(array(
+		$classes->columns(array(
 				'cb' => '<input type="checkbox" />',
 				'title' => __('Title'),
 				'teacher' => __('Teacher'),
@@ -337,20 +340,24 @@ function create_mz_event_cpt() {
 		));
 		
 		// Our text domain to match plugin
-		$yoga_events->set_textdomain('mz-mbo-pages');
+		$classes->set_textdomain('mz-mbo-pages');
 		// make rating and price columns sortable
-		$yoga_events->sortable(array(
+		$classes->sortable(array(
 				'teacher' => array('teacher', true),
 				'time' => array('time', true),
 				'type' => array('type', true)
 		));
 		// use "pages" icon for post type
-		$yoga_events->menu_icon("dashicons-book-alt");
-		//mz_pr($yoga_events);
+		$classes->menu_icon("dashicons-book-alt");
+		//mz_pr($classes);
 	}
 	
-	add_action('plugins_loaded', 'create_mz_event_cpt');
-//EOF create yoga-event CPT
+	add_action('plugins_loaded', 'create_mz_classes_cpt');
+//EOF create class Classes
+
+//Add events CPT
+require_once(WP_PLUGIN_DIR . '/mz-mbo-pages/lib/workshops.php');
+require_once(WP_PLUGIN_DIR . '/mz-mbo-pages/lib/workshops-options.php');
     
 if ( is_admin() )
 {     

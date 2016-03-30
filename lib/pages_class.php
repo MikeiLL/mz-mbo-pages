@@ -65,15 +65,16 @@ class MZ_MBO_Pages_Pages {
 			$args = array(
 				'numberposts' => -1,
 				//'nopaging' => true,
-				'post_type' =>'yoga-event'
+				'post_type' =>'classes'
 			);
 			
 			$all_yoga_classes = get_posts( $args );
 
 			if (is_array($all_yoga_classes) && count($all_yoga_classes) >= 1) {
-				// If there are already yoga-event posts, filter and update
+				// If there are already class posts, filter and update
 				foreach ($all_yoga_classes as $key => $post) {
 					// Compare each item returned from WPDB to MBO results
+					
 					foreach($mz_sorted as $unique => $class) {  
 						// Define Content to update (only) the description:
 							$page_body = $class->class_details;
@@ -94,11 +95,13 @@ class MZ_MBO_Pages_Pages {
 								mz_pr($yoga_class);
 								// If title already exists just update the content in WPDB
 								$post_id = wp_update_post( $yoga_class );
-								add_post_meta( $post_id, 'title', $class->className );
-								add_post_meta( $post_id, 'teacher', $class->staffName );
-								add_post_meta( $post_id, 'time', $class->startTime );
-								add_post_meta( $post_id, 'type', $class->sessionTypeName );
-								add_post_meta( $post_id, 'level', $class->level );
+								if ($post->scheduleType == 'DropIn') {
+									add_post_meta( $post_id, 'title', $class->className );
+									add_post_meta( $post_id, 'teacher', $class->staffName );
+									add_post_meta( $post_id, 'time', $class->startTime );
+									add_post_meta( $post_id, 'type', $class->sessionTypeName );
+									add_post_meta( $post_id, 'level', $class->level );
+									}
 								wp_update_post( $yoga_class );
 								// Remove this item from the WPDB array
 								unset($all_yoga_classes[$key]);
@@ -112,7 +115,9 @@ class MZ_MBO_Pages_Pages {
 			if (is_array($all_yoga_classes) && count($all_yoga_classes) >= 1) {
 				foreach ($all_yoga_classes as $key => $post) {
 					// Now we'll clear out the rest of the WPDB CPT items
-					wp_delete_post( $post->ID, true);
+					// But ONLY for DropIns. We can leave Events in there for posterity
+					if ($post->scheduleType == 'DropIn')
+						wp_delete_post( $post->ID, true);
 				}
 			}
 
@@ -135,21 +140,28 @@ class MZ_MBO_Pages_Pages {
 						}
 						$page_body .= $schedule_day_times->display();
 					// Create post object
+					if ($post->scheduleType == 'DropIn'):
+						$post_type = 'classes';
+					else:
+						$post_type = 'workshops';
+					endif;
 						$yoga_class = array(
 							'post_title'    => wp_strip_all_tags( utf8_encode($class->className) . ' ' . utf8_encode($class->teacher) ),
 							'post_content'  => $page_body,
 							'post_status'   => 'publish',
-							'post_type' => 'yoga-event',
+							'post_type' => 'classes',
 							'post_author'   => 1,
 							'comment_status' => 'closed'
 						);
 						mz_pr($yoga_class);
 						// Insert the post into the database
 						$post_id = wp_insert_post( $yoga_class );
-						add_post_meta( $post_id, 'teacher', $class->staffName );
-						add_post_meta( $post_id, 'time', $class->startTime );
-						add_post_meta( $post_id, 'type', $class->sessionTypeName );
-						add_post_meta( $post_id, 'level', $class->level );
+						if ($post->scheduleType == 'DropIn') {
+							add_post_meta( $post_id, 'teacher', $class->staffName );
+							add_post_meta( $post_id, 'time', $class->startTime );
+							add_post_meta( $post_id, 'type', $class->sessionTypeName );
+							add_post_meta( $post_id, 'level', $class->level );
+						}
 			} // foreach($mz_sorted
 				
 		}//EO90F if Not Empty Classes
@@ -179,7 +191,7 @@ class MZ_MBO_Pages_Pages {
 			$single_event = new Single_event($class, $daynum="", $hide=array(), $locations, $hide_cancelled=0,
 																		$advanced=0, $show_registrants=0, $registrants_count=0, 
 																		$calendar_format='overview');
-																		
+
 			$identifier = $single_event->level . '_' 
 										. $single_event->sessionTypeName 
 										. '_' . $single_event->staffName 

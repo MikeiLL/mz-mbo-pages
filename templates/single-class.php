@@ -15,7 +15,7 @@ function mz_pages_post_nav($tp)
 	$wp2 = array();
 	$i=0;
 	$pOrder = array(
-			'post_type'         =>	'yoga-event',
+			'post_type'         =>	'classes',
 			'orderby'		=>	'title',
 			'order'			=>	'ASC',
 			'nopaging'		=>	true,
@@ -66,24 +66,24 @@ function mz_pages_post_nav($tp)
 				<?php 
 				//mz_pr(wp_get_theme()->get_page_templates() ); 
 				//mz_pr(get_page_template() );
-				//mz_pr(is_page_template('yoga-event') );
+				//mz_pr(is_page_template('classes') );
 				
 				?>
 				<?php add_filter( 'the_content', 'mz_mbo_pages_add_to_content', 50 ); ?>
-				<?php $content = get_template_part( 'content', $name = 'yoga-event' ) ?>
+				<?php $content = get_template_part( 'content', $name = 'classes' ) ?>
 				
-				<?php if( is_singular('yoga-event') ) : 
+				<?php if( is_singular('classes') ) : 
 					mz_pages_post_nav(get_the_ID());
 				else:
 					twentythirteen_post_nav(); 
 				endif;
 				?>
-				<?php if (is_singular( 'yoga-event' )): ?>
+				<?php if (is_singular( 'classes' )): ?>
 					<nav class="navigation paging-navigation" role="navigation">
 						<h1 class="screen-reader-text">Return to Class Overview</h1>
 						<div class="nav-links">
 							<div class="nav-previous">
-								<a href="<?php echo get_post_type_archive_link( 'yoga-event' ); ?>">
+								<a href="<?php echo get_post_type_archive_link( 'classes' ); ?>">
 									<span class="meta-nav">←</span>
 									Return to Class Overview
 								</a>
