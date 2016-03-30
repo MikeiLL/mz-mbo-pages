@@ -46,9 +46,12 @@ function mbo_pages_locate_plugin_template($template_names, $load = false, $requi
 function mbo_pages_single_class_template($single) {
     global $wp_query, $post;
 
-/* Checks for single template by post type */
-if ($post->post_type == "classes"){
+		/* Checks for single template by post type */
+		if ($post->post_type == "classes"){
         $templates[] = 'single-class.php';
+        $template = mbo_pages_locate_plugin_template($templates);
+    } else if ($post->post_type == "workshops"){
+        $templates[] = 'single-workshops.php';
         $template = mbo_pages_locate_plugin_template($templates);
     } else if ($post->post_type != 'post') {
         $templates[] = 'single' . str_replace(' ', '-', $post->post_type) . '.php';
@@ -60,6 +63,7 @@ if ($post->post_type == "classes"){
     return $template;
 }
 // EOF Add our own templates
+
 
 // Include CPT in search results
 function search_filter($query) {
@@ -175,11 +179,19 @@ add_filter( 'cron_schedules', 'add_new_intervals');
 	 * @return string           The content
 	 */	
 	function mz_delete_all_posts ($post_type) {
-		$mycustomposts = get_pages( array( 'post_type' => $post_type, 'number' => 200) );
+		$mycustomposts = get_posts( array( 'post_type' => $post_type, 'posts_per_page' => '-1') );
+		$count = 0;
 		 foreach( $mycustomposts as $mypost ) {
 			 // Delete's each post.
 			 wp_delete_post( $mypost->ID, true);
+			 $count++;
 			// Set to False if you want to send them to Trash.
 		 }
+		 if($count >= 1):
+		 	echo "Deleted " . $count . ' ' . $post_type . '.';
+		 else:
+		 	echo "No posts deleted.";
+		 	mz_pr($mycustomposts);
+		 endif;
 	}
 ?>

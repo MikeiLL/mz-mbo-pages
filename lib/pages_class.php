@@ -95,7 +95,7 @@ class MZ_MBO_Pages_Pages {
 								mz_pr($yoga_class);
 								// If title already exists just update the content in WPDB
 								$post_id = wp_update_post( $yoga_class );
-								if ($post->scheduleType == 'DropIn') {
+								if ($class->scheduleType == 'DropIn') {
 									add_post_meta( $post_id, 'title', $class->className );
 									add_post_meta( $post_id, 'teacher', $class->staffName );
 									add_post_meta( $post_id, 'time', $class->startTime );
@@ -140,7 +140,7 @@ class MZ_MBO_Pages_Pages {
 						}
 						$page_body .= $schedule_day_times->display();
 					// Create post object
-					if ($post->scheduleType == 'DropIn'):
+					if ($class->scheduleType == 'DropIn'):
 						$post_type = 'classes';
 					else:
 						$post_type = 'workshops';
@@ -149,14 +149,14 @@ class MZ_MBO_Pages_Pages {
 							'post_title'    => wp_strip_all_tags( utf8_encode($class->className) . ' ' . utf8_encode($class->teacher) ),
 							'post_content'  => $page_body,
 							'post_status'   => 'publish',
-							'post_type' => 'classes',
+							'post_type' => $post_type,
 							'post_author'   => 1,
 							'comment_status' => 'closed'
 						);
 						mz_pr($yoga_class);
 						// Insert the post into the database
 						$post_id = wp_insert_post( $yoga_class );
-						if ($post->scheduleType == 'DropIn') {
+						if ($class->scheduleType == 'DropIn') {
 							add_post_meta( $post_id, 'teacher', $class->staffName );
 							add_post_meta( $post_id, 'time', $class->startTime );
 							add_post_meta( $post_id, 'type', $class->sessionTypeName );
