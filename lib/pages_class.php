@@ -63,12 +63,13 @@ class MZ_MBO_Pages_Pages {
 			$mz_sorted = $this->sortClasses($mz_days, $this->mz_mbo_globals->time_format, $locations);
 				 
 			$args = array(
-				'numberposts' => 200,
+				'numberposts' => -1,
+				//'nopaging' => true,
 				'post_type' =>'yoga-event'
 			);
 			
 			$all_yoga_classes = get_posts( $args );
-			
+
 			if (is_array($all_yoga_classes) && count($all_yoga_classes) >= 1) {
 				// If there are already yoga-event posts, filter and update
 				foreach ($all_yoga_classes as $key => $post) {
@@ -90,6 +91,7 @@ class MZ_MBO_Pages_Pages {
 									'ID' => $post->ID,
 									'post_content'  => $page_body
 								);
+								mz_pr($yoga_class);
 								// If title already exists just update the content in WPDB
 								$post_id = wp_update_post( $yoga_class );
 								add_post_meta( $post_id, 'title', $class->className );

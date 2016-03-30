@@ -63,8 +63,14 @@ function mz_pages_post_nav($tp)
 					return $content;
 				}
 				?>
+				<?php 
+				//mz_pr(wp_get_theme()->get_page_templates() ); 
+				//mz_pr(get_page_template() );
+				//mz_pr(is_page_template('yoga-event') );
+				
+				?>
 				<?php add_filter( 'the_content', 'mz_mbo_pages_add_to_content', 50 ); ?>
-				<?php $content = get_template_part( 'content', get_post_format() ) ?>
+				<?php $content = get_template_part( 'content', $name = 'yoga-event' ) ?>
 				
 				<?php if( is_singular('yoga-event') ) : 
 					mz_pages_post_nav(get_the_ID());
@@ -93,5 +99,5 @@ function mz_pages_post_nav($tp)
 		</div><!-- #content -->
 	</div><!-- #primary -->
 
-<?php //get_sidebar(); ?>
+<?php get_sidebar(); ?>
 <?php get_footer(); ?>
