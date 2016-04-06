@@ -178,7 +178,7 @@
 			$output['page_title_upcoming'] = wp_filter_nohtml_kses( $input['page_title_upcoming'] );
 
 		if ( isset( $input['page_content_upcoming'] ) && ! empty( $input['page_content_upcoming'] ) ) {
-			$output['page_content_upcoming'] = keel_process_jetpack_markdown( wp_filter_post_kses( $input['page_content_upcoming'] ) );
+			$output['page_content_upcoming'] = mz_mbo_pages_process_jetpack_markdown( wp_filter_post_kses( $input['page_content_upcoming'] ) );
 			$output['page_content_upcoming_markdown'] = wp_filter_post_kses( $input['page_content_upcoming'] );
 		}
 
@@ -186,7 +186,7 @@
 			$output['page_title_past'] = wp_filter_nohtml_kses( $input['page_title_past'] );
 
 		if ( isset( $input['page_content_past'] ) && ! empty( $input['page_content_past'] ) ) {
-			$output['page_content_past'] = keel_process_jetpack_markdown( wp_filter_post_kses( $input['page_content_past'] ) );
+			$output['page_content_past'] = mz_mbo_pages_process_jetpack_markdown( wp_filter_post_kses( $input['page_content_past'] ) );
 			$output['page_content_past_markdown'] = wp_filter_post_kses( $input['page_content_past'] );
 		}
 

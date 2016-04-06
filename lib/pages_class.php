@@ -161,6 +161,10 @@ class MZ_MBO_Pages_Pages {
 							add_post_meta( $post_id, 'time', $class->startTime );
 							add_post_meta( $post_id, 'type', $class->sessionTypeName );
 							add_post_meta( $post_id, 'level', $class->level );
+						} else {
+						//for now assume it's 'enrollment' aka workshop
+							add_post_meta( $post_id, 'mz_pages_workshops_start_date', $class->startTimeStamp);
+							add_post_meta( $post_id, 'mz_pages_workshops_end_date', $class->endTimeStamp);
 						}
 			} // foreach($mz_sorted
 				

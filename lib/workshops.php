@@ -566,7 +566,7 @@ function create_mz_workshops_cpt() {
 	/**
 	 * Redirect "all events" page to upcoming events
 	 */
-	function keel_redirect_all_events_page() {
+	function mz_mbo_pages_redirect_all_events_page() {
 
 		// Only run for events
 		if ( !is_post_type_archive( 'workshops' ) ) return;
@@ -583,7 +583,7 @@ function create_mz_workshops_cpt() {
 		exit;
 
 	}
-	add_action( 'template_redirect', 'keel_redirect_all_events_page' );
+	add_action( 'template_redirect', 'mz_mbo_pages_redirect_all_events_page' );
 
 
 

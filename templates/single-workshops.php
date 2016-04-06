@@ -12,16 +12,17 @@
 	$options = get_option( 'mz_mbo_pages_options','' ); // Events options
 	$start_date = get_post_meta( $post->ID, 'mz_pages_workshops_start_date', true ); // Event start date
 	$end_date = get_post_meta( $post->ID, 'mz_pages_workshops_end_date', true ); // Event end date
-	$details = get_post_meta( $post->ID, 'mz_pages_workshops_details', true ); // Details for this event
-
+	//$details = get_post_meta( $post->ID, 'mz_pages_workshops_details', true ); // Details for this event
+	mz_pr(get_post_meta( $post->ID));
 	// Checks
 	$has_start_date = !empty( $start_date );
-	$has_start_time = !empty( $details['time_start_hour'] ) && !empty( $details['time_start_minutes'] ) && !empty( $details['time_start_ampm'] );
+	//$has_start_time = !empty( $details['time_start_hour'] ) && !empty( $details['time_start_minutes'] ) && !empty( $details['time_start_ampm'] );
 	$has_end_date = !empty( $end_date );
-	$has_end_time = !empty( $details['time_end_hour'] ) && !empty( $details['time_end_minutes'] ) && !empty( $details['time_end_ampm'] );
+	//$has_end_time = !empty( $details['time_end_hour'] ) && !empty( $details['time_end_minutes'] ) && !empty( $details['time_end_ampm'] );
+
 	$upcoming_event = $has_end_date ? $end_date >= strtotime( 'today', current_time( 'timestamp' ) ) : $start_date >= strtotime( 'today', current_time( 'timestamp' ) );
 	$has_location = !empty( $details['location_venue'] ) || !empty( $details['location_address'] ) || !empty( $details['location_city'] ) || !empty( $details['location_state'] );
-	$has_registration = !empty( $details['register_url'] );
+	/*$has_registration = !empty( $details['register_url'] );
 	//TODO utilize options
 	$show_google_calendar = 'on';//!array_key_exists( 'hide_google_calendar', $details ) && $options['hide_google_calendar'] !== 'on';
 	$show_ical_invite = 'on';//!array_key_exists( 'hide_ical_invite', $details ) && $options['hide_ical_invite'] !== 'on';
@@ -43,7 +44,8 @@
 		( !empty( $details['location_city'] ) ? $details['location_city'] . ', ' : '' ) .
 		( !empty( $details['location_state'] ) ? $details['location_state'] . ' ' : '' ) .
 		( !empty( $details['location_zip'] ) ? $details['location_zip'] . ' ' : '' ) .
-		$details['location_country'];
+		$details['location_country']; */
+		$details = array();
 ?>
 
 	<article class="container">
@@ -63,7 +65,7 @@
 							<?php endif; ?>
 						<?php endif; ?>
 
-						<?php if ( $has_start_date && $has_start_time ) : ?>
+						<?php if ( $has_start_date ) : ?>
 							<br>
 						<?php endif; ?>
 
@@ -152,7 +154,7 @@
 					</p>
 				<?php endif; ?>
 			<?php else : ?>
-				<p><em><?php _e( 'This event has ended.', 'keel' ); ?></em></p>
+				<p><em><?php _e( 'This event has ended.', 'mz-mindbody-api' ); ?></em></p>
 			<?php endif; ?>
 		</aside>
 
