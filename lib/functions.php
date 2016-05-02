@@ -172,11 +172,9 @@ add_filter( 'cron_schedules', 'add_new_intervals');
 
 
 	/**
-	 * Get saved markdown content if it exists and Jetpack is active. Otherwise, get HTML.
-	 * @param  array  $options  Array with HTML and markdown content
-	 * @param  string $name     The name of the content
-	 * @param  string $suffix   The suffix to denote the markdown version of the content
-	 * @return string           The content
+	 * Delete all posts of specified type
+	 * @param  string $post_type   The post_type to delete all instalnces of
+	 * @return nothing
 	 */	
 	function mz_delete_all_posts ($post_type) {
 		$mycustomposts = get_posts( array( 'post_type' => $post_type, 'posts_per_page' => '-1') );

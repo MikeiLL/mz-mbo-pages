@@ -317,7 +317,7 @@ function create_mz_classes_cpt() {
 		// create a book custom post type
 		$classes = new CPT('classes');
 		// create a genre taxonomy
-		$classes->register_taxonomy('event-type');
+		//$classes->register_taxonomy('class_type');
 		// Set has'archive to true
 		$classes->set('has_archive', True);
 		// Set singular and plural names
@@ -334,9 +334,9 @@ function create_mz_classes_cpt() {
 				'cb' => '<input type="checkbox" />',
 				'title' => __('Title'),
 				'teacher' => __('Teacher'),
-				'time' => __('Time'),
+				'class_time' => __('Time'),
 				'level' => __('Level'),
-				'type' => __('Type')
+				'classes_class_type' => __('Type')
 		));
 		
 		// Our text domain to match plugin
@@ -344,8 +344,8 @@ function create_mz_classes_cpt() {
 		// make rating and price columns sortable
 		$classes->sortable(array(
 				'teacher' => array('teacher', true),
-				'time' => array('time', true),
-				'type' => array('type', true)
+				'class_time' => array('time', true),
+				'classes_class_type' => array('class_type', true)
 		));
 		// use "pages" icon for post type
 		$classes->menu_icon("dashicons-book-alt");
@@ -354,6 +354,88 @@ function create_mz_classes_cpt() {
 	
 	add_action('plugins_loaded', 'create_mz_classes_cpt');
 //EOF create class Classes
+
+
+// BOF filter column add taxonomy
+
+add_action( 'manage_classes_posts_custom_column', 'my_manage_classes_columns', 10, 2 );
+
+function my_manage_classes_columns( $column, $post_id ) {
+	global $post;
+
+	switch( $column ) {
+
+		/* If displaying the 'teacher' column. */
+		case 'teacher' :
+
+			/* Get the post meta. */
+			$teacher = get_post_meta( $post_id, 'teacher', true );
+
+			/* If no duration is found, output a default message. */
+			if ( empty( $teacher ) )
+				echo __( 'Unknown' );
+
+			/* If there is a duration, append 'minutes' to the text string. */
+			else
+				printf( __( '%s' ), $teacher );
+
+			break;
+
+		/* If displaying the 'class_type' column. */
+		case 'classes_class_type' :
+
+			/* Get the class types for the post. */
+			$terms = get_the_terms( $post_id, 'classes_class_type' );
+
+			/* If terms were found. */
+			if ( !empty( $terms ) ) {
+
+				$out = array();
+
+				/* Loop through each term, linking to the 'edit posts' page for the specific term. */
+				foreach ( $terms as $term ) {
+					$out[] = sprintf( '<a href="%s">%s</a>',
+						esc_url( add_query_arg( array( 'post_type' => $post->post_type, 'classes_class_type' => $term->slug ), 'edit.php' ) ),
+						esc_html( sanitize_term_field( 'name', $term->name, $term->term_id, 'classes_class_type', 'display' ) )
+					);
+				}
+
+				/* Join the terms, separating them with a comma. */
+				echo join( ', ', $out );
+			}
+
+			/* If no terms were found, output a default message. */
+			else {
+				_e( 'No Class Type' );
+			}
+
+			break;
+
+		/* Just break out of the switch statement for everything else. */
+		default :
+			break;
+	}
+}
+
+
+function create_class_type_taxonomies() {
+	    register_taxonomy(
+        'classes_class_type',
+        'classes',
+        array(
+            'labels' => array(
+                'name' => 'Class Type'
+            ),
+            'show_ui' => true,
+            'show_tagcloud' => false,
+            'hierarchical' => false
+        )
+    );
+	//register_taxonomy( 'class_type', 'classes', 'post', array( 'hierarchical' => false, 'label' => 'Class Type', 'query_var' => true, 'rewrite' => true ) );
+}
+
+add_action( 'init', 'create_class_type_taxonomies', 0 );
+// BOF filter column add taxonomy
 
 //Add events CPT
 require_once(WP_PLUGIN_DIR . '/mz-mbo-pages/lib/workshops.php');

@@ -12,7 +12,9 @@ class MZ_MBO_Pages_Pages {
 		$this->mz_mbo_globals = new MZ_Mindbody_Init();
 	}
 
-	
+	/*
+	* Generate a post of CPT 'classes' for each MBO class of type 'DropIn'
+	*/
 	public function mZ_mbo_pages_pages($message='no message', $atts=array(), $account=0) {
 		
 		$atts = shortcode_atts( array(
@@ -99,8 +101,9 @@ class MZ_MBO_Pages_Pages {
 									add_post_meta( $post_id, 'title', $class->className );
 									add_post_meta( $post_id, 'teacher', $class->staffName );
 									add_post_meta( $post_id, 'time', $class->startTime );
-									add_post_meta( $post_id, 'type', $class->sessionTypeName );
+									add_post_meta( $post_id, 'classes_class_type', $class->sessionTypeName );
 									add_post_meta( $post_id, 'level', $class->level );
+									wp_insert_term( $class->sessionTypeName, 'classes_class_type');
 									}
 								wp_update_post( $yoga_class );
 								// Remove this item from the WPDB array
@@ -134,10 +137,18 @@ class MZ_MBO_Pages_Pages {
 						$schedule_day_times = new HTML_Table('schedule_listing');
 						$schedule_day_times->addRow('header');
 						$schedule_day_times->addCell('');
-						foreach($class->non_specified_class_times as $class_time) {
+						
+						if ($class->scheduleType == 'DropIn'):
+							foreach($class->non_specified_class_times as $class_time) {
+								$schedule_day_times->addRow();
+								$schedule_day_times->addCell($class_time);
+							}
+						else: {
+							//assume enrollment and add specific event time.
 							$schedule_day_times->addRow();
-							$schedule_day_times->addCell($class_time);
-						}
+							$schedule_day_times->addCell($class->startDateTime . ' - ' . $class->endDateTime);
+							}
+						endif;
 						$page_body .= $schedule_day_times->display();
 					// Create post object
 					if ($class->scheduleType == 'DropIn'):
@@ -159,8 +170,9 @@ class MZ_MBO_Pages_Pages {
 						if ($class->scheduleType == 'DropIn') {
 							add_post_meta( $post_id, 'teacher', $class->staffName );
 							add_post_meta( $post_id, 'time', $class->startTime );
-							add_post_meta( $post_id, 'type', $class->sessionTypeName );
+							add_post_meta( $post_id, 'classes_class_type', $class->sessionTypeName );
 							add_post_meta( $post_id, 'level', $class->level );
+							wp_insert_term( $class->sessionTypeName, 'classes_class_type');
 						} else {
 						//for now assume it's 'enrollment' aka workshop
 							add_post_meta( $post_id, 'mz_pages_workshops_start_date', $class->startTimeStamp);
@@ -173,6 +185,7 @@ class MZ_MBO_Pages_Pages {
 		//mZ_write_to_file('Updated pages at: ' . time());
 
 	} // EOF mZ_mbo_pages_pages
+
 	
 	public function makeNumericArray($data) {
 		return (isset($data[0])) ? $data : array($data);
