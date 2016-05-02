@@ -37,7 +37,7 @@ function mz_mbo_pages_settings_page() {
 
   echo '<div class="wrap">';
 
-  echo '<h2>Test Button Demo</h2>';
+  echo '<h2>Update/Reset Classes & Workshops</h2>';
 
   // Check whether the button has been pressed AND also check the nonce
   if (isset($_POST['test_button']) && check_admin_referer('test_button_clicked')) {
@@ -50,7 +50,7 @@ function mz_mbo_pages_settings_page() {
   // this is a WordPress security feature - see: https://codex.wordpress.org/WordPress_Nonces
   wp_nonce_field('test_button_clicked');
   echo '<input type="hidden" value="true" name="test_button" />';
-  submit_button('Call Function');
+  submit_button('Reset All Classes & Workshops');
   echo '</form>';
 
   echo '</div>';
@@ -60,20 +60,16 @@ function mz_mbo_pages_settings_page() {
 function test_button_action()
 {
   echo '<div id="message" class="updated fade"><p>'
-    .'The "Call Function" button was clicked.' . '</p></div>';
-
-  $path = WP_CONTENT_DIR . '/test-button-log.txt';
-
-  $handle = fopen($path,"w");
-
-  if ($handle == false) {
-    echo '<p>Could not write the log file to the temporary directory: ' . $path . '</p>';
-  }
-  else {
-    echo '<p>Log of button click written to: ' . $path . '</p>';
-
-    fwrite ($handle , "Call Function button clicked on: " . date("D j M Y H:i:s", time())); 
-    fclose ($handle);
-  }
+    .'Resetting All Classes & Workshops' . '</p></div>';
+    
+	require_once( MZ_MBO_PAGES_DIR .'lib/pages_class.php' );
+	require_once( MZ_MBO_PAGES_DIR .'lib/functions.php' );
+	
+	mz_delete_all_posts('classes');
+	mz_delete_all_posts('workshops');
+	
+  $classes_pages = new MZ_MBO_Pages_Pages();
+  $classes_pages->mZ_mbo_pages_pages();
+  
 }  
 ?>

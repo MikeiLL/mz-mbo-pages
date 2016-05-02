@@ -399,9 +399,8 @@ function my_manage_classes_columns( $column, $post_id ) {
 						esc_html( sanitize_term_field( 'name', $term->name, $term->term_id, 'classes_class_type', 'display' ) )
 					);
 				}
-
 				/* Join the terms, separating them with a comma. */
-				echo join( ', ', $out );
+				//echo join( ', ', $out );
 			}
 
 			/* If no terms were found, output a default message. */
