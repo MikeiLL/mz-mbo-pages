@@ -10,7 +10,7 @@
  * @package MZMBOPAGES
  * 
  */
- 
+
 add_action ('admin_menu', 'mz_mbo_pages_settings_menu');
 
 	function mz_mbo_pages_settings_menu() {
@@ -19,96 +19,61 @@ add_action ('admin_menu', 'mz_mbo_pages_settings_menu');
 		'manage_options', __FILE__, 'mz_mbo_pages_settings_page');
 	}
 
-	function mz_mbo_pages_settings_page() {
-		?>
-		<div class="wrap">
-			<?php screen_icon(); ?>
-			<form action="options.php" method="post">
-				<?php settings_fields('mz_mbo_pages_options'); ?>
-				<?php do_settings_sections('mz_mbo_pages'); ?>
-				<input name="Submit" type="submit" class="button button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
-			</form>
-		</div>
-		<?php
-	}
+function mz_mbo_pages_settings_page() {
 
-	// Register and define the settings
-	add_action('admin_init', 'mz_mbo_pages_admin_init');
+  // This function creates the output for the admin page.
+  // It also checks the value of the $_POST variable to see whether
+  // there has been a form submission. 
 
-	function mz_mbo_pages_admin_init(){
-		register_setting(
-			'mz_mbo_pages_options',
-			'mz_mbo_pages_options',
-			'mz_mbo_pages_validate_options'
-		);
-		
-		add_settings_section(
-			'mz_mbo_pages',
-			'MZ MBO Pages',
-			'mz_mbo_pages_main',
-			'mz_mbo_pages'
-		);
-		
-		add_settings_field(
-			'mz_mbo_pages_logfile_path',
-			__('Path to a log File: ', 'mz_mbo_pages'),
-			'mz_mbo_pages_logfile_path',
-			'mz_mbo_pages',
-			'mz_mbo_pages'
-		);
-		
-		add_settings_field(
-			'mz_mbo_pages_olg_api_calls',
-			__('Log API calls ', 'mz_mbo_pages'),
-			'mz_mbo_pages_log_api_calls',
-			'mz_mbo_pages',
-			'mz_mbo_pages'
-		);
+  // The check_admin_referer is a WordPress function that does some security
+  // checking and is recommended good practice.
 
-	}
+  // General check for user permissions.
+  if (!current_user_can('manage_options'))  {
+    wp_die( __('You do not have sufficient pilchards to access this page.')    );
+  }
 
+  // Start building the page
 
-	function mz_mbo_pages_main() {
-		echo '<p>Content Directory Path: '. WP_CONTENT_DIR . '</p>';
-	}	
-	
-	// Display and fill the form field
-	function mz_mbo_pages_logfile_path() {
-		// get option 'string' value from the database
-		$options = get_option( 'mz_mbo_pages_options',__('Option Not Set', 'mz-mbo-pages') );
-		$mz_mbo_pages_logfile_path = (isset($options['mz_mbo_pages_logfile_path'])) ? $options['mz_mbo_pages_logfile_path'] : __('Path to log file', 'mz-mbo-pages');
+  echo '<div class="wrap">';
 
-		// echo the field
-		echo "<input id='mz_mbo_pages_options' name='mz_mbo_pages_options[mz_mbo_pages_logfile_path]' type='text' value='$mz_mbo_pages_logfile_path' />";
-	}
-	
-	// Display and fill the form field
-	function mz_mbo_pages_log_api_calls() {
-				$options = get_option( 'mz_mbo_pages_options','' );
-		printf(
-	    '<input id="%1$s" name="mz_mbo_pages_options[%1$s]" type="checkbox" %2$s />',
-	    'mz_mbo_pages_log_api_calls',
-	    checked( isset($options['mz_mbo_pages_log_api_calls']) , true, false )
-			);
-		}
-	
-	
-	// Validate user input (we want text only)
-	function mz_mbo_pages_validate_options( $input ) {
-	    foreach ($input as $key => $value)
-	    {
-				$valid[$key] = wp_strip_all_tags(preg_replace( '/\s/', '', $input[$key] ));
-				if( $valid[$key] != $input[$key] )
-				{
-					add_settings_error(
-						'mz_mbo_pages_text_string',
-						'mz_mbo_pages_texterror',
-						'Does not appear to be valid ',
-						'error'
-					);
-				}
-			}
+  echo '<h2>Test Button Demo</h2>';
 
-		return $valid;
-	}
+  // Check whether the button has been pressed AND also check the nonce
+  if (isset($_POST['test_button']) && check_admin_referer('test_button_clicked')) {
+    // the button has been pressed AND we've passed the security check
+    test_button_action();
+  }
+
+  echo '<form action="options-general.php?page='.__FILE__.'" method="post">';
+
+  // this is a WordPress security feature - see: https://codex.wordpress.org/WordPress_Nonces
+  wp_nonce_field('test_button_clicked');
+  echo '<input type="hidden" value="true" name="test_button" />';
+  submit_button('Call Function');
+  echo '</form>';
+
+  echo '</div>';
+
+}
+
+function test_button_action()
+{
+  echo '<div id="message" class="updated fade"><p>'
+    .'The "Call Function" button was clicked.' . '</p></div>';
+
+  $path = WP_CONTENT_DIR . '/test-button-log.txt';
+
+  $handle = fopen($path,"w");
+
+  if ($handle == false) {
+    echo '<p>Could not write the log file to the temporary directory: ' . $path . '</p>';
+  }
+  else {
+    echo '<p>Log of button click written to: ' . $path . '</p>';
+
+    fwrite ($handle , "Call Function button clicked on: " . date("D j M Y H:i:s", time())); 
+    fclose ($handle);
+  }
+}  
 ?>
