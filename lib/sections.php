@@ -66,10 +66,13 @@ function test_button_action()
 	require_once( MZ_MBO_PAGES_DIR .'lib/functions.php' );
 	
 	mz_delete_all_posts('classes');
+	echo '<br />';
 	mz_delete_all_posts('workshops');
+	echo '<br />';
+	echo 'Repopulating from MindBody';
 	
   $classes_pages = new MZ_MBO_Pages_Pages();
-  $classes_pages->mZ_mbo_pages_pages();
+  $classes_pages->mZ_mbo_pages_pages('message');
   
 }  
 ?>

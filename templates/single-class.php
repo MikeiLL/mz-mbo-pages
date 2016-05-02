@@ -9,7 +9,7 @@
 
 get_header(); ?>
 <?php
-
+die("good");
 function mz_pages_post_nav($tp)
 {
 	$wp2 = array();

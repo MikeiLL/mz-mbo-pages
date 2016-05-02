@@ -289,6 +289,7 @@ function mZ_mbo_pages_activation() {
 	require_once(WP_PLUGIN_DIR . '/mz-mbo-pages/lib/pages_class.php');
 	$pages_manager = new MZ_MBO_Pages_Pages();
 	$pages_manager->mZ_mbo_pages_pages();
+	flush_rewrite_rules();
 }
 
 // register deactivation to clear cache
@@ -297,6 +298,7 @@ register_deactivation_hook(__FILE__, 'mZ_mbo_pages_deactivation');
 
 function mZ_mbo_pages_deactivation() {
 	wp_clear_scheduled_hook('make_pages_weekly');
+	flush_rewrite_rules();
 }
 
 //register uninstaller
@@ -350,6 +352,7 @@ function create_mz_classes_cpt() {
 		// use "pages" icon for post type
 		$classes->menu_icon("dashicons-book-alt");
 		//mz_pr($classes);
+		
 	}
 	
 	add_action('plugins_loaded', 'create_mz_classes_cpt');

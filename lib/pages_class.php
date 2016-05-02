@@ -94,7 +94,8 @@ class MZ_MBO_Pages_Pages {
 									'ID' => $post->ID,
 									'post_content'  => $page_body
 								);
-								mz_pr($yoga_class);
+								if ($message != 'no message')
+									mz_pr($yoga_class);
 								// If title already exists just update the content in WPDB
 								$post_id = wp_update_post( $yoga_class );
 								if ($class->scheduleType == 'DropIn') {
@@ -165,7 +166,8 @@ class MZ_MBO_Pages_Pages {
 							'post_author'   => 1,
 							'comment_status' => 'closed'
 						);
-						mz_pr($yoga_class);
+						if ($message != 'no message')
+							mz_pr($yoga_class);
 						// Insert the post into the database
 						$post_id = wp_insert_post( $yoga_class );
 						if ($class->scheduleType == 'DropIn') {

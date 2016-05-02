@@ -17,11 +17,23 @@
  * @since Twenty Thirteen 1.0
  */
 
-get_header(); ?>
+get_header();
+
+	$type = 'classes';
+	$args=array(
+    'post_type' => $type,
+    'post_status' => 'publish',
+    'posts_per_page' => -1,
+    'ignore_sticky_posts'=> 1);
+
+	$query = null;
+	$query = new WP_Query($args);
+
+?>
 
 	<div id="primary" class="content-area">
 		<div id="content" class="site-content" role="main">
-			<?php if ( have_posts() ) : ?>
+			<?php if ( $query->have_posts() ) : ?>
 			<header class="archive-header">
 				<h1 class="archive-title">An Overview of our Classes</h1>
 			</header><!-- .archive-header -->
@@ -39,8 +51,11 @@ get_header(); ?>
 							?>
 
 							<?php /* The loop */ ?>
-							<?php while ( have_posts() ) : the_post(); ?>
+							<?php while ( $query->have_posts() ) : $query->the_post(); ?>
 									<?php
+									$class_type = wp_get_post_terms( $query->post->ID, 'classes_class_type' );
+									$teacher = get_post_meta($query->post->ID, 'teacher');
+									//echo get_term_link($term->slug, 'teacher');
 									$link = new html_element('a');
 									$link->set('href', get_the_permalink());
 									// remove "with so and so from the title
@@ -49,8 +64,8 @@ get_header(); ?>
 									$row_css_classes = 'mz_description_holder mz_schedule_table mz_location_';
 									$tbl->addRow($row_css_classes);
 									$tbl->addCell($link->build());
-									$tbl->addCell(get_field('teacher'));
-									$tbl->addCell(get_field('type'));
+									$tbl->addCell($teacher[0]);
+									$tbl->addCell($class_type[0]->name);
 									//$tbl->addCell(get_field('level'));
 									?>
 							<?php endwhile; ?>
