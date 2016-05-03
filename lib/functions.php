@@ -44,6 +44,7 @@ function mbo_pages_locate_plugin_template($template_names, $load = false, $requi
 /* Filter the single_template with our custom function*/
 
 function mbo_pages_single_class_template($single) {
+
     global $wp_query, $post;
 
 		/* Checks for single template by post type */
@@ -91,7 +92,7 @@ function list_all_classes( $query ) {
         // Display all posts for a custom post type called 'classes'
         $query->set('posts_per_page', -1 );
 				$query->set('orderby', 'meta_value');	
-				$query->set('meta_key', 'type');	 
+				$query->set('meta_key', 'classes_class_type');	 
 				$query->set('order', 'ASC'); 
         
         return;

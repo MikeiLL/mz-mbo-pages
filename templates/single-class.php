@@ -6,10 +6,9 @@
  * @subpackage Twenty_Thirteen
  * @since Twenty Thirteen 1.0
  */
+ 
+get_header(); 
 
-get_header(); ?>
-<?php
-die("good");
 function mz_pages_post_nav($tp)
 {
 	$wp2 = array();
