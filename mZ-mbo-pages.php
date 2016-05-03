@@ -327,8 +327,12 @@ function create_mz_classes_cpt() {
 		$classes->plural = 'Classes';
 		// This may or may not be necessary and desired
 		$classes->set('hierarchical', False);
-		// Someone says to do this for archive page reqrite to work
-		$classes->set('rewrite', 'classes');
+		// Someone says to do this for archive page rewrite to work
+		// but i'm reading rewrite should be false to use with taxonomy URLs
+		//$classes->set('rewrite', 'classes');
+		
+		//i'm reading rewrite should be True to use with taxonomy URLs
+		$classes->set('query_var', True);
 		// Match plugin text domain
 		$classes->set_textdomain('mz-mbo-pages');
 		// define the columns to appear on the admin edit screen
@@ -421,22 +425,119 @@ function my_manage_classes_columns( $column, $post_id ) {
 
 
 function create_class_type_taxonomies() {
-	    register_taxonomy(
-        'classes_class_type',
-        'classes',
-        array(
-            'labels' => array(
-                'name' => 'Class Type'
-            ),
-            'show_ui' => true,
-            'show_tagcloud' => false,
-            'hierarchical' => false
-        )
-    );
-	//register_taxonomy( 'class_type', 'classes', 'post', array( 'hierarchical' => false, 'label' => 'Class Type', 'query_var' => true, 'rewrite' => true ) );
-}
+	if (!taxonomy_exists('classes_class_type')) {
+		register_taxonomy(
+			'classes_class_type',
+			'classes',
+			array(
+					'labels' => array(
+							'name' => 'Class Type'
+					),
+					'show_ui' => true,
+					'show_tagcloud' => false,
+					'hierarchical' => false,
+					'publicly_queryable' => true,
+					'query_var' => true,
+					'rewrite' => true
+					)
+				);
+			}
+		global $wp_rewrite;
+		
+		$class_type_structure = '/classes/%classes_class_type%';
+		$wp_rewrite->add_rewrite_tag("%classes_class_type%", '([^/]+)', "classes_class_type=");
+		$wp_rewrite->add_permastruct('classes_class_type', $class_type_structure, false);
+		}
 
 add_action( 'init', 'create_class_type_taxonomies', 0 );
+
+/*
+Permalink code adapted from http://shibashake.com/wordpress-theme/custom-post-type-permalinks-part-2
+*/
+function classes_permalink_structure($post_link, $post, $permalink, $sample)
+	{
+
+	if (strpos($permalink, '%classes_class_type%') === FALSE) return $permalink;
+     
+        // Get post
+        $post = get_post($post_id);
+        if (!$post) return $permalink;
+ 				
+        // Get taxonomy terms
+        $terms = wp_get_object_terms($post->ID, 'classes_class_type');   
+        if (!is_wp_error($terms) && !empty($terms) && is_object($terms[0])) $taxonomy_slug = $terms[0]->slug;
+        else $taxonomy_slug = 'all-class-types';
+ 
+    return str_replace('%classes_class_type%', $taxonomy_slug, $permalink);
+
+	}
+add_filter('post_type_link', 'classes_permalink_structure', 10, 4);
+
+// Add filter to plugin init function
+add_filter('post_type_link', 'classes_class_type_permalink', 10, 3);   
+// Adapted from get_permalink function in wp-includes/link-template.php
+function classes_class_type_permalink($permalink, $post_id, $leavename) {
+    $post = get_post($post_id);
+    $rewritecode = array(
+        '%year%',
+        '%monthnum%',
+        '%day%',
+        '%hour%',
+        '%minute%',
+        '%second%',
+        $leavename? '' : '%postname%',
+        '%post_id%',
+        '%category%',
+        '%author%',
+        $leavename? '' : '%pagename%',
+    );
+ 
+    if ( '' != $permalink && !in_array($post->post_status, array('draft', 'pending', 'auto-draft')) ) {
+        $unixtime = strtotime($post->post_date);
+     
+        $category = '';
+        if ( strpos($permalink, '%category%') !== false ) {
+            $cats = get_the_category($post->ID);
+            if ( $cats ) {
+                usort($cats, '_usort_terms_by_ID'); // order by ID
+                $category = $cats[0]->slug;
+                if ( $parent = $cats[0]->parent )
+                    $category = get_category_parents($parent, false, '/', true) . $category;
+            }
+            // show default category in permalinks, without
+            // having to assign it explicitly
+            if ( empty($category) ) {
+                $default_category = get_category( get_option( 'default_category' ) );
+                $category = is_wp_error( $default_category ) ? '' : $default_category->slug;
+            }
+        }
+     
+        $author = '';
+        if ( strpos($permalink, '%author%') !== false ) {
+            $authordata = get_userdata($post->post_author);
+            $author = $authordata->user_nicename;
+        }
+     
+        $date = explode(" ",date('Y m d H i s', $unixtime));
+        $rewritereplace =
+        array(
+            $date[0],
+            $date[1],
+            $date[2],
+            $date[3],
+            $date[4],
+            $date[5],
+            $post->post_name,
+            $post->ID,
+            $category,
+            $author,
+            $post->post_name,
+        );
+        $permalink = str_replace($rewritecode, $rewritereplace, $permalink);
+    } else { // if they're not using the fancy permalink option
+    }
+    return $permalink;
+}
 // BOF filter column add taxonomy
 
 //Add events CPT
