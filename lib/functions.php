@@ -5,6 +5,7 @@
 
 add_filter('archive_template', 'mbo_pages_class_archive_template');
 add_filter('single_template', 'mbo_pages_single_class_template');
+add_filter('taxonomy_template', 'mbo_pages_class_taxonomy_template');
 
 function mbo_pages_class_archive_template($template) {
     global $wp_query;
@@ -55,6 +56,28 @@ function mbo_pages_single_class_template($single) {
         $templates[] = 'single-workshops.php';
         $template = mbo_pages_locate_plugin_template($templates);
     } else if ($post->post_type != 'post') {
+        $templates[] = 'single' . str_replace(' ', '-', $post->post_type) . '.php';
+        $template = mbo_pages_locate_plugin_template($templates);
+    } else {
+        $templates[] = 'single.php';
+        $template = mbo_pages_locate_plugin_template($templates);
+    }
+    return $template;
+}
+
+
+/* Filter the single_template with our custom function*/
+
+function mbo_pages_class_taxonomy_template($single) {
+
+    global $wp_query, $post;
+    $taxonomy = get_query_var('taxonomy');
+
+		/* Checks for single template by post type */
+		if ($taxonomy == "classes_class_type"){
+        $templates[] = 'taxonomy-classes_class_type.php';
+        $template = mbo_pages_locate_plugin_template($templates);
+    } else if ($taxonomy != "classes_class_type") {
         $templates[] = 'single' . str_replace(' ', '-', $post->post_type) . '.php';
         $template = mbo_pages_locate_plugin_template($templates);
     } else {

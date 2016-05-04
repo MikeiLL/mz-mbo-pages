@@ -56,16 +56,19 @@ get_header();
 									$class_type = wp_get_post_terms( $query->post->ID, 'classes_class_type' );
 									$teacher = get_post_meta($query->post->ID, 'teacher');
 									//echo get_term_link($term->slug, 'teacher');
-									$link = new html_element('a');
-									$link->set('href', get_the_permalink());
+									$class_title_link = new html_element('a');
+									$class_type_link = new html_element('a');
+									$class_title_link->set('href', get_the_permalink($query->post->ID));
+									$class_type_link->set('href', get_term_link( $class_type[0]->name, 'classes_class_type' ));
 									// remove "with so and so from the title
 									$event_title_sans_instructor = explode(__("with", 'mz-mbo-pages'), get_the_title());
-									$link->set('text', $event_title_sans_instructor[0]);
+									$class_title_link->set('text', $event_title_sans_instructor[0]);
+									$class_type_link->set('text', $class_type[0]->name);
 									$row_css_classes = 'mz_description_holder mz_schedule_table mz_location_';
 									$tbl->addRow($row_css_classes);
-									$tbl->addCell($link->build());
+									$tbl->addCell($class_title_link->build());
 									$tbl->addCell($teacher[0]);
-									$tbl->addCell($class_type[0]->name);
+									$tbl->addCell($class_type_link->build());
 									//$tbl->addCell(get_field('level'));
 									?>
 							<?php endwhile; ?>
