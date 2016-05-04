@@ -333,6 +333,8 @@ function create_mz_classes_cpt() {
 		
 		//i'm reading rewrite should be True to use with taxonomy URLs
 		$classes->set('query_var', True);
+		//will this make them come up in searches of the site?
+		$classes->set('public', True);
 		// Match plugin text domain
 		$classes->set_textdomain('mz-mbo-pages');
 		// define the columns to appear on the admin edit screen

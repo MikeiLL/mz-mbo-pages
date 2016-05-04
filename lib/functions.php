@@ -193,7 +193,7 @@ add_filter( 'cron_schedules', 'add_new_intervals');
 		return $options[$name];
 
 	}
-
+	
 
 	/**
 	 * Delete all posts of specified type
