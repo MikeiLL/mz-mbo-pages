@@ -16,7 +16,7 @@ class MZ_MBO_Pages_Pages {
 	* Generate a post of CPT 'classes' for each MBO class of type 'DropIn'
 	*/
 	public function mZ_mbo_pages_pages($message='no message', $atts=array(), $account=0) {
-		
+		die("fault");
 		$atts = shortcode_atts( array(
 			'locations' => ''
 				), $atts );

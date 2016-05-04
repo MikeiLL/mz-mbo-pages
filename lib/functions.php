@@ -194,6 +194,17 @@ add_filter( 'cron_schedules', 'add_new_intervals');
 
 	}
 	
+	if ( ! function_exists( 'mz_pr' ) ) {
+	/**
+	 * Write message out to file
+	 * @param  String/Array  $message		What we want to examine in browser
+	 */
+		function mz_pr($message) {
+			echo "<pre>";
+			print_r($message);
+			echo "</pre>";
+		}
+	}
 
 	/**
 	 * Delete all posts of specified type
