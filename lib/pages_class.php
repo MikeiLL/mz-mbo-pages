@@ -16,7 +16,7 @@ class MZ_MBO_Pages_Pages {
 	* Generate a post of CPT 'classes' for each MBO class of type 'DropIn'
 	*/
 	public function mZ_mbo_pages_pages($message='no message', $atts=array(), $account=0) {
-		die("fault");
+
 		$atts = shortcode_atts( array(
 			'locations' => ''
 				), $atts );
@@ -31,9 +31,9 @@ class MZ_MBO_Pages_Pages {
     // START caching configuration
 		$mz_list_classes_cache = "mz_list_classes_cache";
 		
-		$mz_cache_reset = isset($this->mz_mbo_globals->options['mz_mindbody_clear_cache']) ? "on" : "off";
+		$mz_force_cache_reset = isset($this->mz_mbo_globals->options['mz_mindbody_clear_cache']) ? "on" : "off";
 
-		if ( $mz_cache_reset == "on" )
+		if ( $mz_force_cache_reset == "off" )
 		{
 			delete_transient( $mz_list_classes_cache );
 		}
