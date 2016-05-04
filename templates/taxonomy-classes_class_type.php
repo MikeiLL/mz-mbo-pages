@@ -18,13 +18,24 @@
  */
 
 get_header();
-
+	
 	$type = 'classes';
+	$page_taxonomy = get_query_var( 'classes_class_type', 'yoga' );
+	wp_reset_query();
+
 	$args=array(
     'post_type' => $type,
     'post_status' => 'publish',
     'posts_per_page' => -1,
-    'ignore_sticky_posts'=> 1);
+    'ignore_sticky_posts'=> 1,
+    'tax_query' => array(
+			array(
+				'taxonomy' => 'classes_class_type',
+				'field'    => 'slug',
+				'terms'    => $page_taxonomy,
+			),
+		)
+	);
 
 	$query = null;
 	$query = new WP_Query($args);
@@ -35,7 +46,7 @@ get_header();
 		<div id="content" class="site-content" role="main">
 			<?php if ( $query->have_posts() ) : ?>
 			<header class="archive-header">
-				<h1 class="archive-title">An Overview of our Classes</h1>
+				<h1 class="archive-title"><?php echo ucfirst(str_replace('-', ' ', get_query_var( 'classes_class_type', 'yoga'))) ?> Classes</h1>
 			</header><!-- .archive-header -->
 			<div class="full-width-entry-content">
 				<div id="mz-mbo-pages" class="mz_mbo_schedule">
@@ -55,20 +66,16 @@ get_header();
 									<?php
 									$class_type = wp_get_post_terms( $query->post->ID, 'classes_class_type' );
 									$teacher = get_post_meta($query->post->ID, 'teacher');
-									//echo get_term_link($term->slug, 'teacher');
 									$class_title_link = new html_element('a');
-									$class_type_link = new html_element('a');
-									$class_title_link->set('href', get_the_permalink($query->post->ID));
-									$class_type_link->set('href', get_term_link( $class_type[0]->name, 'classes_class_type' ));
+									$class_title_link->set('href', get_the_permalink($post));
 									// remove "with so and so from the title
 									$event_title_sans_instructor = explode(__("with", 'mz-mbo-pages'), get_the_title());
 									$class_title_link->set('text', $event_title_sans_instructor[0]);
-									$class_type_link->set('text', $class_type[0]->name);
 									$row_css_classes = 'mz_description_holder mz_schedule_table mz_location_';
 									$tbl->addRow($row_css_classes);
 									$tbl->addCell($class_title_link->build());
 									$tbl->addCell($teacher[0]);
-									$tbl->addCell($class_type_link->build());
+									$tbl->addCell($class_type[0]->name);
 									//$tbl->addCell(get_field('level'));
 									?>
 							<?php endwhile; ?>
@@ -97,7 +104,7 @@ get_header();
 							add_action('wp_footer', 'add_filter_table', 10);
 							add_action('wp_footer', 'initialize_filter');
 						?>
-						<?php twentythirteen_paging_nav(); ?>
+						<?php //twentythirteen_paging_nav(); ?>
 
 					<?php else : ?>
 						<?php get_template_part( 'content', 'none' ); ?>
@@ -125,7 +132,7 @@ get_header();
 						label: mz_mindbody_api_i18n.label,
 						selector: mz_mindbody_api_i18n.selector,
 						quickListClass: 'mz_quick_filter',
-						quickList: [mz_mindbody_api_i18n.quick_1, mz_mindbody_api_i18n.quick_2, mz_mindbody_api_i18n.quick_3],
+						quickList: [],
 						locations: mz_mindbody_api_i18n.Locations_dict
 					});					
 				

@@ -68,25 +68,25 @@ function mbo_pages_single_class_template($single) {
 
 /* Filter the single_template with our custom function*/
 
-function mbo_pages_class_taxonomy_template($single) {
+function mbo_pages_class_taxonomy_template($archive_template) {
 
     global $wp_query, $post;
     $taxonomy = get_query_var('taxonomy');
-
 		/* Checks for single template by post type */
 		if ($taxonomy == "classes_class_type"){
         $templates[] = 'taxonomy-classes_class_type.php';
         $template = mbo_pages_locate_plugin_template($templates);
     } else if ($taxonomy != "classes_class_type") {
-        $templates[] = 'single' . str_replace(' ', '-', $post->post_type) . '.php';
+        $templates[] = 'taxonomy' . str_replace(' ', '-', $post->post_type) . '.php';
         $template = mbo_pages_locate_plugin_template($templates);
     } else {
-        $templates[] = 'single.php';
+        $templates[] = 'archive.php';
         $template = mbo_pages_locate_plugin_template($templates);
     }
     return $template;
 }
 // EOF Add our own templates
+
 
 
 // Include CPT in search results

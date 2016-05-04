@@ -329,7 +329,7 @@ function create_mz_classes_cpt() {
 		$classes->set('hierarchical', False);
 		// Someone says to do this for archive page rewrite to work
 		// but i'm reading rewrite should be false to use with taxonomy URLs
-		//$classes->set('rewrite', 'classes');
+		$classes->set('rewrite', False);
 		
 		//i'm reading rewrite should be True to use with taxonomy URLs
 		$classes->set('query_var', True);
@@ -444,7 +444,7 @@ function create_class_type_taxonomies() {
 			}
 		global $wp_rewrite;
 		
-		$class_type_structure = '/classes/%classes_class_type%';
+		$class_type_structure = '/class-type/%classes_class_type%';
 		$wp_rewrite->add_rewrite_tag("%classes_class_type%", '([^/]+)', "classes_class_type=");
 		$wp_rewrite->add_permastruct('classes_class_type', $class_type_structure, false);
 		}
@@ -471,10 +471,10 @@ function classes_permalink_structure($post_link, $post, $permalink, $sample)
     return str_replace('%classes_class_type%', $taxonomy_slug, $permalink);
 
 	}
-add_filter('post_type_link', 'classes_permalink_structure', 10, 4);
+//add_filter('post_type_link', 'classes_permalink_structure', 10, 4);
 
 // Add filter to plugin init function
-add_filter('post_type_link', 'classes_class_type_permalink', 10, 3);   
+//add_filter('post_type_link', 'classes_class_type_permalink', 10, 3);   
 // Adapted from get_permalink function in wp-includes/link-template.php
 function classes_class_type_permalink($permalink, $post_id, $leavename) {
     $post = get_post($post_id);
