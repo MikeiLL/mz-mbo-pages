@@ -30,7 +30,7 @@ define( 'MZ_MBO_PAGES_URL', plugin_dir_url( __FILE__ ) );
 add_action( 'admin_init', 'mbo_pages_has_mindbody_api' );
 
 function mbo_pages_has_mindbody_api() {
-    if ( is_admin() && current_user_can( 'activate_plugins' ) && !is_plugin_active( 'mz-mindbody-api/mZ-mindbody-api.php' ) ) {
+    if ( is_admin() && current_user_can( 'activate_plugins' ) && !is_plugin_active( 'mz-mindbody-api/mz-mindbody.php' ) ) {
         add_action( 'admin_notices', 'child_plugin_notice' );
 
         deactivate_plugins( plugin_basename( __FILE__ ) ); 
@@ -43,8 +43,14 @@ function mbo_pages_has_mindbody_api() {
 
 if ( ! function_exists( 'child_plugin_notice' ) ) {
 	function child_plugin_notice(){
-			?><div class="error"><p>Sorry, but Child Plugin requires the Parent plugin to be installed and active.</p></div><?php
+			?><div class="error"><p>Sorry, but Child Plugin requires the Parent plugin, MZ Mindbody API, to be installed and active.</p></div><?php
 	}
+}
+
+add_action('plugins_loaded', 'mzmbo_init');
+
+function mzmbo_init() {
+	$mZmbo = MZ_Mindbody\MZMBO();
 }
 
 /**
@@ -68,12 +74,12 @@ class MZ_MBO_Pages_Admin {
         }
         
     private function load_sections() {
-        require_once MZ_MBO_PAGES_DIR .'lib/sections.php';
+        require_once MZ_MBO_PAGES_DIR .'inc/sections.php';
         }
         
     public function load_pages() {
-        require_once MZ_MBO_PAGES_DIR .'lib/functions.php';
-        require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
+        require_once MZ_MBO_PAGES_DIR .'inc/functions.php';
+        require_once MZ_MBO_PAGES_DIR .'inc/class-mzmbo-pages.php';
         }
 }
 
@@ -215,7 +221,7 @@ class MZ_MBO_Pages {
 	
 		//Functions
 
-		require_once MZ_MBO_PAGES_DIR .'lib/functions.php';
+		require_once MZ_MBO_PAGES_DIR .'inc/functions.php';
 		
         $this->loader = new MZ_MBO_Pages_Loader();
         
@@ -248,9 +254,9 @@ class MZ_MBO_Pages {
 		}
 		
  		private function add_shortcodes() {
-			require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
-			$mz_mbo_pages = new MZ_MBO_Pages_Pages();
-			add_shortcode('mz-mbo-list-classes', array($mz_mbo_pages, 'mZ_mbo_pages_pages'));
+			require_once MZ_MBO_PAGES_DIR .'inc/class-mzmbo-pages.php';
+			$mz_mbo_pages = new MZMBO_Pages();
+			add_shortcode('mz-mbo-list-classes', array($mz_mbo_pages, 'MZMBO_Pages'));
     }
  
     public function run() {
@@ -271,24 +277,24 @@ add_action( 'plugins_loaded', 'MZ_MBO_Pages_load_textdomain' );
 
 // Cron Job to pull in class overview data semi-weekly.
 // Need following when using custom times
-require_once MZ_MBO_PAGES_DIR .'lib/functions.php';
+require_once MZ_MBO_PAGES_DIR .'inc/functions.php';
 
 register_activation_hook(__FILE__, 'mZ_mbo_pages_activation');
 
 // Need this file for class method
-require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
-$pages_manager = new MZ_MBO_Pages_Pages();
-add_action('make_pages_weekly', array($pages_manager, 'mZ_mbo_pages_pages'));
+require_once MZ_MBO_PAGES_DIR .'inc/class-mzmbo-pages.php';
+$pages_manager = new MZMBO_Pages();
+add_action('make_pages_weekly', array($pages_manager, 'MZMBO_Pages'));
 
 function mZ_mbo_pages_activation() {
 	wp_schedule_event( current_time( 'timestamp' ), 'weekly', 'make_pages_weekly');
 	// Run this once upon activation to populate class overview CPT elements
 	// Need this file for class method
 	// Is MZ_MBO_PAGES_DIR not yet declared?
-	//require_once MZ_MBO_PAGES_DIR .'lib/pages_class.php';
-	require_once(WP_PLUGIN_DIR . '/mz-mbo-pages/lib/pages_class.php');
-	$pages_manager = new MZ_MBO_Pages_Pages();
-	$pages_manager->mZ_mbo_pages_pages();
+	//require_once MZ_MBO_PAGES_DIR .'inc/class-mzmbo-pages.php';
+	require_once(WP_PLUGIN_DIR . '/mz-mbo-pages/inc/class-mzmbo-pages.php');
+	$pages_manager = new MZMBO_Pages;
+	$pages_manager->get_mbo_results();
 	flush_rewrite_rules();
 }
 
@@ -315,7 +321,7 @@ function mZ_mbo_pages_uninstall(){
 function create_mz_classes_cpt() {
 	
 		// include the custom post type class
-		require_once(MZ_MBO_PAGES_DIR . 'lib/cpt.php');
+		require_once(MZ_MBO_PAGES_DIR . 'inc/cpt.php');
 		// create a book custom post type
 		$classes = new CPT('classes');
 		// create a genre taxonomy
@@ -380,7 +386,7 @@ function my_manage_classes_columns( $column, $post_id ) {
 			/* Get the post meta. */
 			$teacher = get_post_meta( $post_id, 'teacher', true );
 
-			/* If no duration is found, output a default message. */
+			/* If no teacher is found, output a default message. */
 			if ( empty( $teacher ) )
 				echo __( 'Unknown' );
 
@@ -434,6 +440,40 @@ function create_class_type_taxonomies() {
 			array(
 					'labels' => array(
 							'name' => 'Class Type'
+					),
+					'show_ui' => true,
+					'show_tagcloud' => false,
+					'hierarchical' => false,
+					'publicly_queryable' => true,
+					'query_var' => true,
+					'rewrite' => true
+					)
+				);
+			}
+		if (!taxonomy_exists('classes_level')) {
+		register_taxonomy(
+			'classes_level',
+			'classes',
+			array(
+					'labels' => array(
+							'name' => 'Level'
+					),
+					'show_ui' => true,
+					'show_tagcloud' => false,
+					'hierarchical' => false,
+					'publicly_queryable' => true,
+					'query_var' => true,
+					'rewrite' => true
+					)
+				);
+			}
+		if (!taxonomy_exists('classes_time')) {
+		register_taxonomy(
+			'classes_time',
+			'classes',
+			array(
+					'labels' => array(
+							'name' => 'Time'
 					),
 					'show_ui' => true,
 					'show_tagcloud' => false,
@@ -543,8 +583,8 @@ function classes_class_type_permalink($permalink, $post_id, $leavename) {
 // BOF filter column add taxonomy
 
 //Add events CPT
-require_once(WP_PLUGIN_DIR . '/mz-mbo-pages/lib/workshops.php');
-require_once(WP_PLUGIN_DIR . '/mz-mbo-pages/lib/workshops-options.php');
+require_once(WP_PLUGIN_DIR . '/mz-mbo-pages/inc/workshops.php');
+require_once(WP_PLUGIN_DIR . '/mz-mbo-pages/inc/workshops-options.php');
     
 if ( is_admin() )
 {     

@@ -13,7 +13,7 @@
 function create_mz_workshops_cpt() {
 	
 		// include the custom post type class
-		require_once(MZ_MBO_PAGES_DIR . 'lib/cpt.php');
+		require_once(MZ_MBO_PAGES_DIR . 'inc/cpt.php');
 		// create a book custom post type
 		$classes = new CPT('workshops');
 		// create a genre taxonomy

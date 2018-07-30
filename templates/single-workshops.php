@@ -5,6 +5,8 @@
  * Template for "workshops" custom post type content.
  */
 
+ 
+get_header(); 
 ?>
 
 <?php

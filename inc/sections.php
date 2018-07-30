@@ -62,8 +62,8 @@ function test_button_action()
   echo '<div id="message" class="updated fade"><p>'
     .'Resetting All Classes & Workshops' . '</p></div>';
     
-	require_once( MZ_MBO_PAGES_DIR .'lib/pages_class.php' );
-	require_once( MZ_MBO_PAGES_DIR .'lib/functions.php' );
+	require_once( MZ_MBO_PAGES_DIR .'inc/class-mzmbo-pages.php' );
+	require_once( MZ_MBO_PAGES_DIR .'inc/functions.php' );
 	
 	mz_delete_all_posts('classes');
 	echo '<br />';
@@ -71,8 +71,8 @@ function test_button_action()
 	echo '<br />';
 	echo 'Repopulating from MindBody';
 	
-  $classes_pages = new MZ_MBO_Pages_Pages();
-  $classes_pages->mZ_mbo_pages_pages('message');
+  $classes_pages = new MZMBO_Pages();
+  $classes_pages->get_mbo_results('message');
   
 }  
 ?>
