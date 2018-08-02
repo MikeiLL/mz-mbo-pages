@@ -18,6 +18,8 @@
  */
 
 get_header();
+
+require_once(MZ_MBO_PAGES_DIR .'inc/class-html-element.php');
 	
 	$type = 'classes';
 	$page_taxonomy = get_query_var( 'classes_class_type', 'yoga' );
