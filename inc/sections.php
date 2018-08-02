@@ -40,7 +40,7 @@ function mz_mbo_pages_settings_page() {
   echo '<h2>Update/Reset Classes & Workshops</h2>';
 
   // Check whether the button has been pressed AND also check the nonce
-  if (isset($_POST['test_button']) && check_admin_referer('test_button_clicked')) {
+  if (isset($_POST['mz_mbo_pages_button']) && check_admin_referer('mz_mbo_pages_button_clicked')) {
     // the button has been pressed AND we've passed the security check
     test_button_action();
   }
@@ -48,8 +48,8 @@ function mz_mbo_pages_settings_page() {
   echo '<form action="options-general.php?page='.__FILE__.'" method="post">';
 
   // this is a WordPress security feature - see: https://codex.wordpress.org/WordPress_Nonces
-  wp_nonce_field('test_button_clicked');
-  echo '<input type="hidden" value="true" name="test_button" />';
+  wp_nonce_field('mz_mbo_pages_button_clicked');
+  echo '<input type="hidden" value="true" name="mz_mbo_pages_button" />';
   submit_button('Reset All Classes & Workshops');
   echo '</form>';
 

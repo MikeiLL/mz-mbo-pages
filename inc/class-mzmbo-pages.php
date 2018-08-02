@@ -10,6 +10,12 @@ class MZMBO_Pages extends Interfaces\Retrieve {
 	public $mz_mbo_globals;
 	public $mz_time_frame;
 	
+	/**
+	 * Store Class Owners Setting
+	 *
+	 */
+	private $store_class_owners_setting;
+	
 	public function __construct(){
 		require_once(MZ_MBO_PAGES_DIR .'inc/html_table.class.php');
 	}
@@ -47,7 +53,7 @@ class MZMBO_Pages extends Interfaces\Retrieve {
 			
 			// Retrieve already created posts, if any
 			$all_yoga_classes = get_posts( $args );
-			
+						
 			if (is_array($all_yoga_classes) && count($all_yoga_classes) >= 1) {
 				// If there are already class posts, filter and update
 				foreach ($all_yoga_classes as $key => $post) {
@@ -119,7 +125,7 @@ class MZMBO_Pages extends Interfaces\Retrieve {
 		foreach($mz_classes as $class)
 		{
 			
-			$single_event = new MZ_Mindbody\Inc\Schedule\Schedule_Item($class);
+			$single_event = new MZ_Mindbody\Inc\Schedule\Schedule_Item($class, array('mbo_pages_call' => 1));
 
 			// Build a string to identify this as a unique class
 			$identifier = $single_event->level . '_' 

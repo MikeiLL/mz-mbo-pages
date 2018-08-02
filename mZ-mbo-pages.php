@@ -450,40 +450,6 @@ function create_class_type_taxonomies() {
 					)
 				);
 			}
-		if (!taxonomy_exists('classes_level')) {
-		register_taxonomy(
-			'classes_level',
-			'classes',
-			array(
-					'labels' => array(
-							'name' => 'Level'
-					),
-					'show_ui' => true,
-					'show_tagcloud' => false,
-					'hierarchical' => false,
-					'publicly_queryable' => true,
-					'query_var' => true,
-					'rewrite' => true
-					)
-				);
-			}
-		if (!taxonomy_exists('classes_time')) {
-		register_taxonomy(
-			'classes_time',
-			'classes',
-			array(
-					'labels' => array(
-							'name' => 'Time'
-					),
-					'show_ui' => true,
-					'show_tagcloud' => false,
-					'hierarchical' => false,
-					'publicly_queryable' => true,
-					'query_var' => true,
-					'rewrite' => true
-					)
-				);
-			}
 		global $wp_rewrite;
 		
 		$class_type_structure = '/class-type/%classes_class_type%';
