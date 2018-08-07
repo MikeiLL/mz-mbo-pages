@@ -17,6 +17,8 @@
  * @since Twenty Thirteen 1.0
  */
 
+get_header();
+
 require_once(MZ_MBO_PAGES_DIR .'inc/class-html-element.php');
 
 	$type = 'classes';

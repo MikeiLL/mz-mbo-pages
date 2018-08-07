@@ -7,6 +7,8 @@
  * @since Twenty Thirteen 1.0
  */
  
+get_header(); 
+
 function mz_pages_post_nav($tp)
 {
 	$wp2 = array();
